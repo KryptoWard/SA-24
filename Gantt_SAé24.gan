@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?><project name="Untitled Gantt Project" company="" webLink="http://" view-date="2025-05-12" view-index="0" gantt-divider-location="35" resource-divider-location="300" version="3.3.3312" locale="fr_FR">
+    <description/>
+    <view zooming-state="default:2" id="gantt-chart">
+        <field id="tpd3" name="Nom" width="20" order="0"/>
+        <field id="tpd4" name="Date de début" width="20" order="1"/>
+        <field id="tpd5" name="Date de fin" width="20" order="2"/>
+        <field id="tpd15" name="Notes" width="20" order="3"/>
+        <option id="taskLabelUp" value="name"/>
+        <option id="taskLabelDown" value="length"/>
+        <option id="taskLabelLeft" value=""/>
+        <option id="filter.completedTasks" value="false"/>
+        <option id="filter.dueTodayTasks" value="false"/>
+        <option id="filter.overdueTasks" value="false"/>
+        <option id="filter.inProgressTodayTasks" value="false"/>
+        <option id="color.recent"><![CDATA[#000000 #6633ff #ff9999 #ffcc00 #006666 #ff66ff #cccc00 #00cc99 #9933ff #009900]]></option>
+    </view>
+    <view id="resource-table">
+        <field id="0" name="Nom" width="210" order="0"/>
+        <field id="1" name="Rôle par défaut" width="86" order="1"/>
+    </view>
+    <!-- -->
+    <calendars>
+        <day-types>
+            <day-type id="0"/>
+            <day-type id="1"/>
+            <default-week id="1" name="default" sun="0" mon="0" tue="0" wed="0" thu="0" fri="0" sat="0"/>
+            <only-show-weekends value="false"/>
+            <overriden-day-types/>
+            <days/>
+        </day-types>
+    </calendars>
+    <tasks empty-milestones="true">
+        <taskproperties>
+            <taskproperty id="tpd0" name="type" type="default" valuetype="icon"/>
+            <taskproperty id="tpd1" name="priority" type="default" valuetype="icon"/>
+            <taskproperty id="tpd2" name="info" type="default" valuetype="icon"/>
+            <taskproperty id="tpd3" name="name" type="default" valuetype="text"/>
+            <taskproperty id="tpd4" name="begindate" type="default" valuetype="date"/>
+            <taskproperty id="tpd5" name="enddate" type="default" valuetype="date"/>
+            <taskproperty id="tpd6" name="duration" type="default" valuetype="int"/>
+            <taskproperty id="tpd7" name="completion" type="default" valuetype="int"/>
+            <taskproperty id="tpd8" name="coordinator" type="default" valuetype="text"/>
+            <taskproperty id="tpd9" name="predecessorsr" type="default" valuetype="text"/>
+        </taskproperties>
+        <task id="0" uid="f0d77a3b6f304e9cb3cb1bb4d52d977c" name="Phase 1 : Lancement &amp; organisation" color="#ff0000" meeting="false" start="2025-05-28" duration="3" complete="0" expand="true">
+            <notes><![CDATA[Objectifs : 
+ - Cadrage du projet
+ - Choix des outils
+ - Mise en place e l'environnement]]></notes>
+            <task id="4" uid="b3cad9a199104eeeb446b32da3c9ca03" name="Planification du projet" color="#cc00cc" meeting="false" start="2025-05-28" duration="1" complete="0" expand="true">
+                <depend id="1" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="1" uid="5f50f0a61ec94a35ba973364ccdee406" name="Répartition des rôles" color="#009900" meeting="false" start="2025-05-29" duration="1" complete="0" expand="true">
+                <depend id="2" type="2" difference="0" hardness="Strong"/>
+                <depend id="3" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="2" uid="f0a635145edf47cd83f77ca0d83262e5" name="Choix des outils collaboratifs" color="#ff66ff" meeting="false" start="2025-05-30" duration="1" complete="0" expand="true"/>
+            <task id="3" uid="48e459db525748999cddf51ed29db427" name="Création du dépôt Github" color="#ffcc00" meeting="false" start="2025-05-30" duration="1" complete="0" expand="true"/>
+            <task id="5" uid="495a20cb39f1476cb114c0a4b13f8935" name="Début schéma BD &amp; réflexion choix techniques" color="#9933ff" meeting="false" start="2025-05-30" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="6" uid="c8dfd6be3e9b4d70bd23397d7bf92302" name="Phase 2 : Conception technique" color="#ff0000" meeting="false" start="2025-05-29" duration="12" complete="0" expand="true">
+            <notes><![CDATA[Objectifs :
+ - Définir l'architecture technique
+ - Chosir les composants et les technologies]]></notes>
+            <task id="9" uid="6b65825fd37c42079a8dd4a2bb8e7765" name="Rédaction des choix techniques" color="#00cc99" meeting="false" start="2025-05-29" duration="1" complete="0" expand="true"/>
+            <task id="10" uid="5340c232b1dd4a6ea09b364bf06d3ff9" name="Début cartographie signal micro" color="#00cc99" meeting="false" start="2025-05-29" duration="4" complete="0" expand="true"/>
+            <task id="8" uid="8c9add9f0be24842927f09f368075b06" name="Ébauche schéma PhpMyAdmin" color="#9933ff" meeting="false" start="2025-05-31" duration="2" complete="0" expand="true">
+                <depend id="7" type="2" difference="0" hardness="Strong"/>
+            </task>
+            <task id="7" uid="2ec1d2883a7d47508923006a0f29925e" name="Modèle Entité-Association de la base de données" color="#9933ff" meeting="false" start="2025-06-02" duration="8" complete="0" expand="true"/>
+            <task id="28" uid="215398e800774930a58cc530ed046522" name="Début création du site web" color="#ffcc00" meeting="false" start="2025-05-30" duration="7" complete="0" expand="true"/>
+        </task>
+        <task id="11" uid="9a9f9f2ab100456694165873f000fec6" name="Livrable 1" color="#ff00ff" meeting="true" start="2025-06-09" duration="0" complete="0" expand="true">
+            <notes><![CDATA[ - Gantt
+ - Présentation des choix techniques]]></notes>
+        </task>
+        <task id="12" uid="7a60b1330e974949892eafa94a4c45d1" name="Phase 3 : Développement &amp; tests" color="#ff0000" meeting="false" start="2025-06-06" duration="11" complete="0" expand="true">
+            <notes><![CDATA[Objectifs : 
+ - Développer et tester les fonctionnalités
+ - Valider les modules matériels et logiciels]]></notes>
+            <task id="17" uid="47d32394118e47589ae70c53ff53c9eb" name="Export du schéma BD sous PhpMyAdmin" color="#9933ff" meeting="false" start="2025-06-06" duration="5" complete="0" expand="true">
+                <depend id="16" type="3" difference="0" hardness="Strong"/>
+            </task>
+            <task id="16" uid="8061ecfe56b046a5be080574ed81a022" name="Connexion à la base de données" color="#9933ff" meeting="false" start="2025-06-08" duration="3" complete="0" expand="true"/>
+            <task id="15" uid="2de8c04372ff4863b97fb291c179196a" name="Finalisation cartographie signaux micro" color="#00cc99" shape="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" meeting="false" start="2025-06-06" duration="9" complete="0" expand="true"/>
+            <task id="18" uid="688d062593e34291a0cdf079ca0257e1" name="Rédaction fiche technique capteur" color="#cccc00" meeting="false" start="2025-06-14" duration="3" complete="0" expand="true"/>
+            <task id="13" uid="33b524dfae9f40ca9e896dfd0a341c17" name="Codage capteurs + commentaire anglais (Rasberry Pi)" color="#ff66ff" meeting="false" start="2025-06-06" duration="7" complete="0" expand="true"/>
+            <task id="14" uid="64af60f0c3d8449281379c3a06cdb886" name="Test configuration capteurs ultrason" color="#006666" meeting="false" start="2025-06-08" duration="5" complete="0" expand="true"/>
+            <task id="29" uid="a8877c628b8144c4b881a3065c971172" name="Finalisation du site web" color="#ffcc00" meeting="false" start="2025-06-07" duration="8" complete="0" expand="true"/>
+        </task>
+        <task id="19" uid="4d03903a38074e4bb6b00d5ebd7ba190" name="Livrable 2" color="#ff00ff" meeting="true" start="2025-06-16" duration="0" complete="0" expand="true">
+            <notes><![CDATA[ - Cartographie amplitude
+ - Schéma conception BD (oonglet concepteur sous PhpMyAdmin)
+ - Fiche technique configuration
+ - Test capteuer ultrason]]></notes>
+        </task>
+        <task id="20" uid="7289897659c64c1f8df82f3d5f0a4c9d" name="Phase 4 : Finalisation &amp; documentation" color="#ff0000" meeting="false" start="2025-06-17" duration="7" complete="0" expand="true">
+            <notes><![CDATA[Objectifs :
+ - Finalsier le projet
+ - Préparer la présentation et centralsier les livrables]]></notes>
+            <task id="21" uid="e7ab8e7d5b68424fa028e707b4cfa410" name="Finalisation du code + commentaires" color="#ff9999" meeting="false" start="2025-06-17" duration="2" complete="0" expand="true"/>
+            <task id="24" uid="cd236ef7375a4c258fcf3b048c49d375" name="Relecture fiche technique &amp; vérification code" color="#000000" meeting="false" start="2025-06-18" duration="1" complete="0" expand="true"/>
+            <task id="22" uid="094592161b884a0d89e417a8cb9aa9e9" name="Documentation projet" color="#6633ff" meeting="false" start="2025-06-17" duration="4" complete="0" expand="true"/>
+            <task id="23" uid="48600a94a31e4b4b874f127471d1882b" name="Rédaction des synthèses des problèmes (groupe + individuel)" color="#000000" meeting="false" start="2025-06-17" duration="3" complete="0" expand="true"/>
+            <task id="27" uid="3a183e2578a6481d9421f7db59fe0714" name="Création du diaporama" color="#000000" meeting="false" start="2025-06-18" duration="5" complete="0" expand="true"/>
+            <task id="25" uid="c9e5d9632aeb4b1e984d9eba93100abd" name="Publication et test final sur Github" color="#000000" meeting="false" start="2025-06-23" duration="1" complete="0" expand="true"/>
+        </task>
+        <task id="26" uid="384d1ecd871d45d18cc1fd7c4abefb69" name="Livrable 3" color="#ff00ff" meeting="true" start="2025-06-23" duration="0" complete="0" expand="true">
+            <notes><![CDATA[ -  Version finale du projet
+ - URL projet Github]]></notes>
+        </task>
+    </tasks>
+    <resources>
+        <resource id="0" name="Audoin Anaïs" function="Default:0" contacts="" phone=""/>
+        <resource id="1" name="Vogt Yanis" function="Default:0" contacts="" phone=""/>
+        <resource id="2" name="Zenden Simon" function="Default:0" contacts="" phone=""/>
+        <resource id="3" name="Roques Gabriel" function="Default:0" contacts="" phone=""/>
+        <resource id="4" name="Peyre Ethan" function="Default:0" contacts="" phone=""/>
+    </resources>
+    <allocations>
+        <allocation task-id="4" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="5" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="8" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="7" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="17" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="16" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="24" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="22" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="23" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="27" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="25" resource-id="0" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="9" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="10" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="18" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="15" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="14" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="24" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="22" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="23" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="27" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="25" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="1" resource-id="1" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="9" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="10" resource-id="2" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="15" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="14" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="24" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="23" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="27" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="25" resource-id="2" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="3" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="28" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="29" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="21" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="24" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="23" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="27" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="25" resource-id="3" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="4" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="18" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="13" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="14" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="21" resource-id="4" function="Default:0" responsible="false" load="100.0"/>
+        <allocation task-id="24" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="22" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="23" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="27" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="25" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+        <allocation task-id="2" resource-id="4" function="Default:0" responsible="true" load="100.0"/>
+    </allocations>
+    <vacations/>
+    <previous/>
+    <roles roleset-name="Default"/>
+</project>
