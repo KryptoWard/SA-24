@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAÉ24 - Visualisation de Localisation</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+        <div class="container nav-container">
+            <div class="logo">SAÉ24 Simulation</div>
+        </div>
+    </nav>
+
+    <header>
+        <div class="hero-content">
+            <h1 class="hero-title">Visualisation en Temps Réel</h1>
+            <p class="hero-subtitle">Simulation de localisation par trilatération</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <section id="demo">
+            <div class="demo-container">
+                <h2 class="section-title">Démonstration</h2>
+                <div class="room-grid" id="roomGrid">
+                    <canvas id="simulationCanvas"></canvas>
+                </div>
+                <div class="control-panel">
+                    <div class="status-panel" id="statusPanel">
+                        Statut : En attente de données...
+                    </div>
+                    <button class="btn btn-secondary" id="clearDbButton">Effacer les données</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="visualisation.js"></script>
+</body>
+</html>
