@@ -1,4 +1,8 @@
 <?php
+// Simple API endpoint that clears all records from the
+// MySQL database used by the simulator. It is called from
+// the admin dashboard to reset stored measurements. A JSON
+// response indicates success or failure.
 // Indiquer au navigateur que la réponse est au format JSON
 header('Content-Type: application/json');
 
