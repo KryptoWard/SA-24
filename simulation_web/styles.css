@@ -1,9 +1,3 @@
-/*
-  Shared style sheet used by all pages of the
-  simulator web interface. Defines the light
-  theme and responsive grid utilities reused
-  across the different tools.
-*/
 * {
     margin: 0;
     padding: 0;

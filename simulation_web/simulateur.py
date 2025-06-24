@@ -1,8 +1,3 @@
-"""Standalone simulator that publishes synthetic
-ultrasound and sound data to MQTT for testing
-the web visualisations. It generates a moving
-target and sends either distances or signal
-amplitudes depending on the mode."""
 import paho.mqtt.client as mqtt
 import time
 import math

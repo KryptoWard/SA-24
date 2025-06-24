@@ -1,11 +1,4 @@
 <!DOCTYPE html>
-<!--
-  Real-time monitoring interface showing sensor
-  readings, MQTT logs and trilateration steps.
-  Several canvases plot incoming positions and
-  display a grid of the simulated room. Status
-  panels update as new data arrives.
--->
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -155,7 +148,7 @@
             padding: 10px;
             text-align: center;
             border-top: 1px solid #dee2e6;
-            z-index: 1001; /* Above the content */
+            z-index: 1001; /* Au-dessus du contenu */
         }
         
         .btn-sound { background: #27ae60 !important; }
@@ -180,6 +173,7 @@
                 <a href="comparison.html" class="nav-link">⚖️ Comparaison</a>
                 <a href="reports.html" class="nav-link">📊 Rapports</a>
                 <a href="admin.html" class="nav-link">⚙️ Admin</a>
+                <a href="projet.html" class="nav-link">⭐ Le projet</a>
             </div>
             <div class="mobile-menu-toggle" id="mobileMenuToggle">
                 <span></span>
@@ -248,7 +242,7 @@
     </div>
 
     <script>
-        // THE ORIGINAL AND COMPLETE SCRIPT IS KEPT HERE
+        // LE SCRIPT ORIGINAL ET COMPLET EST CONSERVÉ ICI
         class SensorMonitor {
             constructor() {
                 this.isRunning = false;
@@ -256,7 +250,7 @@
                 this.intervalId = null;
                 this.sensors = ['A', 'B', 'C'];
                 this.sensorPositions = { 'A': [0.25, 0.25], 'B': [0.25, 7.75], 'C': [7.75, 7.75] };
-                this.currentPosition = [4.0, 4.0]; // Simulated object position
+                this.currentPosition = [4.0, 4.0]; // Position simulée de l'objet
                 this.SPEED_OF_SOUND = 343.0;
                 this.SOUND_SOURCE_POWER = 100;
                 
@@ -276,7 +270,7 @@
                     this.stopSimulation();
                 });
 
-                // Script for the mobile menu
+                // Script pour le menu mobile
                 const mobileMenuToggle = document.getElementById('mobileMenuToggle');
                 const navLinks = document.getElementById('navLinks');
                 if(mobileMenuToggle && navLinks) {
@@ -296,10 +290,10 @@
                 this.isRunning = true;
                 this.updateStatus(`Simulation ${mode} en cours...`);
                 
-                // Update the simulated object's position every 2 seconds
+                // Mise à jour de la position de l'objet simulé toutes les 2 secondes
                 this.moveObjectRandomly();
                 
-                // Simulate sensor data every 500ms
+                // Simulation des données de capteurs toutes les 500ms
                 this.intervalId = setInterval(() => {
                     this.simulateSensorData();
                 }, 500);
@@ -318,13 +312,13 @@
             moveObjectRandomly() {
                 if (!this.isRunning) return;
                 
-                // Generate a new random position
+                // Générer une nouvelle position aléatoire
                 this.currentPosition = [
-                    Math.random() * 6 + 1, // Between 1 and 7 meters
+                    Math.random() * 6 + 1, // Entre 1 et 7 mètres
                     Math.random() * 6 + 1
                 ];
                 
-                // Schedule the next movement
+                // Programmer le prochain mouvement
                 setTimeout(() => this.moveObjectRandomly(), 2000);
             }
 
@@ -341,7 +335,7 @@
                     const sensorPos = this.sensorPositions[sensorId];
                     const realDistance = this.calculateDistance(this.currentPosition, sensorPos);
                     
-                    // Add a bit of noise
+                    // Ajouter un peu de bruit
                     const noise = (Math.random() - 0.5) * 0.1;
                     const noisyDistance = realDistance + noise;
                     
@@ -349,13 +343,13 @@
                         this.simulateSingleSensor(sensorId, noisyDistance);
                         allDistances[sensorId] = noisyDistance;
                         
-                        // When all sensors have responded, compute trilateration
+                        // Si tous les capteurs ont répondu, calculer la trilatération
                         if (Object.keys(allDistances).length === 3) {
                             setTimeout(() => {
                                 this.performTrilateration(allDistances);
                             }, 200);
                         }
-                    }, index * 100); // Offset to simulate sequential reception
+                    }, index * 100); // Décalage pour simuler la réception séquentielle
                 });
             }
 
@@ -363,7 +357,7 @@
                 let rawValue, convertedDistance, topic, payload;
                 
                 if (this.currentMode === 'ultrason') {
-                    // Simulate round-trip time
+                    // Simuler le temps de vol (aller-retour)
                     rawValue = (distance * 2) / this.SPEED_OF_SOUND;
                     convertedDistance = (rawValue * this.SPEED_OF_SOUND) / 2;
                     topic = `SAE24/ultrason/temps`;
@@ -377,7 +371,7 @@
                     setTimeout(() => element.classList.remove('active'), 1000);
                     
                 } else if (this.currentMode === 'sound') {
-                    // Simulate amplitude (inverse square law)
+                    // Simuler l'amplitude (loi inverse du carré)
                     rawValue = this.SOUND_SOURCE_POWER / (distance * distance);
                     convertedDistance = Math.sqrt(this.SOUND_SOURCE_POWER / rawValue);
                     topic = `SAE24/son/amplitude`;

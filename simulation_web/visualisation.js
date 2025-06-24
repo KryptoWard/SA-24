@@ -1,7 +1,3 @@
-// Front-end script driving the live visualisations on the
-// main page: draws grids, positions and interacts with the API.
-// Contains a visualization class for each sensor mode and
-// helper methods to scale coordinates and poll new data.
 document.addEventListener('DOMContentLoaded', () => {
     const roomWidthMeters = 8.0;
     const roomHeightMeters = 8.0;

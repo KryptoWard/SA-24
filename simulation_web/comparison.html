@@ -1,10 +1,4 @@
 <!DOCTYPE html>
-<!--
-  Interactive page to compare ultrasound and sound
-  sensor performance side by side. It draws two
-  synchronized canvases so the visitor can easily
-  inspect differences between the sensing modes.
--->
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -30,7 +24,7 @@
             position: relative;
         }
 
-        /* Keep colored borders for distinction */
+        /* On conserve les bordures colorées pour la distinction */
         .sensor-panel.ultrason {
             border-color: #3498db;
         }
@@ -150,7 +144,7 @@
 
         .metric-bars {
             display: flex;
-            align-items: flex-end; /* Corrected 'end' to 'flex-end' */
+            align-items: flex-end; /* Correction de 'end' vers 'flex-end' */
             justify-content: center;
             gap: 10px;
             height: 80px;
@@ -182,7 +176,7 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: #e74c3c; /* Default red (inactive) */
+            background: #e74c3c; /* Rouge par défaut (inactif) */
         }
 
         .status-indicator.active {
@@ -217,6 +211,7 @@
                 <a href="#" class="nav-link" style="background: rgba(255,255,255,0.2);">⚖️ Comparaison</a>
                 <a href="reports.html" class="nav-link">📊 Rapports</a>
                 <a href="admin.html" class="nav-link">⚙️ Admin</a>
+                <a href="projet.html" class="nav-link">⭐ Le projet</a>
             </div>
             <div class="mobile-menu-toggle" id="mobileMenuToggle">
                 <span></span>
@@ -369,7 +364,7 @@
     </main>
 
     <script>
-        // The JavaScript code is kept here without changes
+        // Le script JavaScript est conservé ici sans modification
         class SensorComparator {
             constructor() {
                 this.isRunning = false;
@@ -560,10 +555,10 @@
             }
 
             clearDisplays() {
-                this.updateDisplays(); // Update with empty data
+                this.updateDisplays(); // Met à jour avec des données vides
                 this.animateMetric('precisionUltrason', 0, 'precisionUltrasonValue', '--%');
                 this.animateMetric('precisionSound', 0, 'precisionSoundValue', '--%');
-                // ... reset other metrics
+                // ... reset autres métriques
             }
 
             drawCanvases() {

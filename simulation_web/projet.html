@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAÉ24 - Localisation en Environnement Intérieur</title>
+    <link rel="stylesheet" type="text/css" href="styles2.css">
+    <!-- Le script.js sera inclus à la fin du body -->
+</head>
+<body>
+    <nav>
+        <div class="container"> <!-- Ce div est principalement pour le layout CSS, ok de le garder -->
+            <div class="nav-container">
+                <a href="#accueil" class="logo">SAÉ24</a> <!-- Le logo peut être un lien vers l'accueil -->
+                <ul class="nav-menu">
+                    <li><a href="./index.html">Accueil</a></li>
+                    <li><a href="#accueil">Introduction</a></li>
+                    <li><a href="#projet">Le Projet</a></li>
+                    <li><a href="#methodologies">Méthodologies</a></li>
+                    <li><a href="#demonstrations">Démonstrations</a></li>
+                    <li><a href="#documentation">Documentation</a></li>
+                    <li><a href="#planning">Planning</a></li>
+                    <li><a href="#equipe">L'Équipe</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header id="accueil" class="hero-section"> <!-- header peut être utilisé pour l'intro principale -->
+            <div class="container">
+                <div class="hero-content">
+                    <h1 class="hero-title">SAÉ24</h1>
+                    <p class="hero-subtitle">Approches de Localisation en Environnement Intérieur</p>
+                    <p class="hero-description">
+                        Exploration de deux approches innovantes pour la localisation d'objets et de personnes en environnement intérieur :
+                        localisation par analyse sonore et localisation par capteurs ultrasons. Ce projet combine IoT, intelligence artificielle
+                        et technologies de communication pour répondre aux défis de la géolocalisation indoor.
+                    </p>
+                    <div class="approach-badges">
+                        <span class="badge">🔊 Localisation par Son</span> <!-- span est ok pour des "badges" stylés -->
+                        <span class="badge">📡 Localisation par Ultrasons</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section id="projet">
+            <div class="container">
+                <h2 class="section-title">Le Projet</h2>
+
+                <article class="project-context"> <!-- Article pour une section de contenu auto-suffisante -->
+                    <h3 style="color: #2980b9; margin-bottom: 20px;">Contexte et Problématique</h3>
+                    <p style="font-size: 1.2rem; color: #555;">
+                        La localisation en environnement intérieur représente un défi technologique majeur. Contrairement aux espaces extérieurs
+                        où le GPS fonctionne efficacement, les environnements indoor nécessitent des approches spécialisées pour localiser
+                        précisément objets et personnes. Ce projet explore deux technologies complémentaires pour répondre à cette problématique.
+                    </p>
+                </article>
+
+                <div class="project-objectives">
+                    <h3 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">Objectifs Minimaux du Projet</h3>
+                    <ul class="objectives-grid"> <!-- ul pour une liste d'objectifs -->
+                        <li class="objective-card">
+                            <h4>🏢 Gestion de Salle</h4> <!-- h4 car sous-section de h3 -->
+                            <p>Mise en place d'un système de gestion d'une salle de référence avec cartographie précise et positionnement des capteurs.</p>
+                        </li>
+                        <li class="objective-card">
+                            <h4>📍 Localisation d'Objet</h4>
+                            <p>Affichage en temps réel de la position d'un objet dans l'environnement surveillé avec précision.</p>
+                        </li>
+                        <li class="objective-card">
+                            <h4>⚙️ Configuration de Scénarios</h4>
+                            <p>Interface permettant de configurer des scénarios de déplacements prédéfinis pour les objets à localiser.</p>
+                        </li>
+                        <li class="objective-card">
+                            <h4>🎮 Simulation de Déplacement</h4>
+                            <p>Simulation de déplacement d'objet en environnement non perturbé avec trajectoires programmables.</p>
+                        </li>
+                        <li class="objective-card">
+                            <h4>📊 Affichage des Estimations</h4>
+                            <p>Visualisation du déplacement estimé par le système comparé au déplacement réel.</p>
+                        </li>
+                        <li class="objective-card">
+                            <h4>👤 Localisation de Personne</h4>
+                            <p>Réalisation de scénarios de déplacement d'une personne avec affichage de position en temps réel.</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <aside class="critical-learnings" style="background: #ecf0f1; padding: 30px; border-radius: 15px; margin-top: 40px;">
+                    <!-- aside pour du contenu tangentiellement lié -->
+                    <h3 style="text-align: center; color: #2c3e50; margin-bottom: 20px;">Apprentissages Critiques Mobilisés</h3>
+                    <dl style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px;">
+                        <!-- dl (description list) pour les apprentissages -->
+                        <div style="text-align: center;">
+                            <dt><strong style="color: #e74c3c;">RT1</strong></dt>
+                            <dd>Administrer les réseaux et l'Internet</dd>
+                        </div>
+                        <div style="text-align: center;">
+                            <dt><strong style="color: #e74c3c;">RT2</strong></dt>
+                            <dd>Connecter les entreprises et les usagers</dd>
+                        </div>
+                        <div style="text-align: center;">
+                            <dt><strong style="color: #e74c3c;">RT3</strong></dt>
+                            <dd>Créer des applications et services sécurisés</dd>
+                        </div>
+                    </dl>
+                </aside>
+            </div>
+        </section>
+
+        <section id="methodologies">
+            <div class="container">
+                <h2 class="section-title">Méthodologies & Approches Techniques</h2>
+
+                <article class="approach-section"> <!-- Chaque approche est un article -->
+                    <h3 class="approach-title">🔊 Localisation par le Son</h3>
+                    <p style="text-align: center; font-size: 1.1rem; margin-bottom: 30px; color: #555;">
+                        Utilisation de signaux sonores modulés FSK pour déterminer la position d'objets par analyse d'atténuation et triangulation.
+                    </p>
+                    <ul class="tech-specs"> <!-- ul pour la liste des spécifications techniques -->
+                        <li class="spec-card">
+                            <h4>📐 Plan de la Pièce</h4>
+                            <p>Grille 16x16 cases avec positionnement stratégique des microphones pour une couverture optimale de la zone.</p>
+                        </li>
+                        <li class="spec-card">
+                            <h4>🔧 Architecture Matérielle</h4>
+                            <p>Raspberry Pi, microphones directionnels, serveur web intégré, base de données MySQL pour stockage des données.</p>
+                        </li>
+                        <li class="spec-card">
+                            <h4>📡 Communication</h4>
+                            <p>Protocole MQTT pour transmission temps réel, architecture distribuée avec broker centralisé.</p>
+                        </li>
+                        <li class="spec-card">
+                            <h4>🎵 Modulation FSK</h4>
+                            <p>Frequency Shift Keying avec fréquences optimisées pour environnement intérieur, réduction des interférences.</p>
+                        </li>
+                        <li class="spec-card">
+                            <h4>📈 Calcul d'Atténuation</h4>
+                            <p>Formule: Perte = 20*log10(distance) + facteur_environnement pour estimation précise de la distance.</p>
+                        </li>
+                        <li class="spec-card">
+                            <h4>💾 Stockage de Données</h4>
+                            <p>Base de données relationnelle avec historique des positions et cartographie des amplitudes mesurées.</p>
+                        </li>
+                    </ul>
+                </article>
+
+                <article class="approach-section">
+                    <h3 class="approach-title">📡 Localisation par Ultrasons</h3>
+                    <p style="text-align: center; font-size: 1.1rem; margin-bottom: 30px; color: #555;">
+                        Système de trilatération basé sur des capteurs ultrasons pour une localisation précise de personnes en mouvement.
+                    </p>
+                    <ul class="tech-specs">
+                        <li class="spec-card">
+                            <h4>🏢 Environnement Surveillé</h4>
+                            <p>Salles E102/E103 équipées avec réseau de capteurs ultrasons haute précision disposés stratégiquement.</p>
+                        </li>
+                        <li class="spec-card">
+                            <h4>⚡ Architecture IoT</h4>
+                            <p>Raspberry Pi + GrovePi+, capteurs ultrasons Grove, communication MQTT temps réel avec serveur central.</p>
+                        </li>
+                        <li class="spec-card">
+                            <h4>📊 Format de Données</h4>
+                            <p>Messages JSON structurés: {"sensor_id": "US01", "distance": 1.25, "timestamp": "2025-01-15T10:30:00Z"}</p>
+                        </li>
+                        <li class="spec-card">
+                            <h4>🧮 Algorithme de Trilatération</h4>
+                            <p>Calcul de position par intersection de cercles, algorithme d'optimisation pour gestion des erreurs de mesure.</p>
+                        </li>
+                        <li class="spec-card">
+                            <h4>🔄 Traitement Temps Réel</h4>
+                            <p>Pipeline de traitement: acquisition → filtrage → calcul → affichage avec latence minimale (<100ms).</p>
+                        </li>
+                        <li class="spec-card">
+                            <h4>📱 Interface Web</h4>
+                            <p>Dashboard responsive HTML5/CSS3/JavaScript pour monitoring et visualisation des trajectoires en direct.</p>
+                        </li>
+                    </ul>
+                </article>
+
+                <aside class="common-infrastructure" style="background: #2c3e50; color: white; padding: 30px; border-radius: 15px; margin-top: 40px; text-align: center;">
+                    <h3 style="margin-bottom: 20px;">🏗️ Infrastructure Commune</h3>
+                    <!-- Ceci est une liste, utilisons ul -->
+                    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+                        <li>MQTT Broker (Mosquitto)</li>
+                        <li>Base de données MySQL/InfluxDB</li>
+                        <li>Serveur Web Apache/XAMPP</li>
+                        <li>API REST pour intégration</li>
+                    </ul>
+                </aside>
+            </div>
+        </section>
+
+        <section id="demonstrations">
+            <div class="container">
+                <h2 class="section-title">Démonstrations Interactives</h2>
+                <p style="text-align: center; font-size: 1.2rem; margin-bottom: 50px; color: #555;">
+                    Cette section présente les fonctionnalités clés du système en action à travers des simulations interactives.
+                </p>
+
+                <figure class="demo-container"> <!-- Figure pour la visualisation avec sa légende implicite (h3) -->
+                    <h3 style="text-align: center; color: #2c3e50; margin-bottom: 30px;">Visualisation de la Salle E103</h3>
+                    <div class="room-grid" id="roomGrid" role="img" aria-label="Grille de la salle E103 avec capteurs et objet suivi">
+                        <!-- role="img" et aria-label pour l'accessibilité si c'est purement visuel -->
+                        <div class="grid-lines" id="gridLines"></div>
+                        <div class="sensor" style="top: 10%; left: 10%;" title="Microphone 1"></div>
+                        <div class="sensor" style="top: 10%; right: 10%;" title="Microphone 2"></div>
+                        <div class="sensor" style="bottom: 10%; left: 10%;" title="Microphone 3"></div>
+                        <div class="sensor" style="bottom: 10%; right: 10%;" title="Microphone 4"></div>
+                        <div class="object" id="trackingObject" style="top: 50%; left: 50%;"></div>
+                    </div>
+
+                    <figcaption class="status-panel" id="statusPanel">
+                        <strong>État du Système:</strong> <span id="systemStatus">En attente...</span>
+                    </figcaption>
+                </figure>
+
+                <div class="control-panel">
+                    <button class="btn btn-primary" onclick="startObjectSimulation()">🔊 Simuler Localisation Objet (Son)</button>
+                    <button class="btn btn-primary" onclick="startPersonSimulation()">📡 Simuler Localisation Personne (Ultrasons)</button>
+                    <button class="btn btn-secondary" onclick="resetSimulation()">🔄 Réinitialiser</button>
+                </div>
+
+                <div class="simulation-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 40px;">
+                    <aside class="realtime-data" style="background: #ecf0f1; padding: 25px; border-radius: 10px;">
+                        <h4 style="color: #2980b9; margin-bottom: 15px;">📊 Données Temps Réel</h4>
+                        <dl id="liveData"> <!-- dl pour les paires clé/valeur -->
+                            <div><dt>Position X:</dt> <dd id="posX">--</dd></div> <!-- dd représente "l'élément de détail d'une description"-->
+                            <div><dt>Position Y:</dt> <dd id="posY">--</dd></div>
+                            <div><dt>Précision:</dt> <dd id="accuracy">--</dd></div>
+                            <div><dt>Dernière MAJ:</dt> <dd id="lastUpdate">--</dd></div>
+                        </dl>
+                    </aside>
+                    <form class="configuration-panel" style="background: #ecf0f1; padding: 25px; border-radius: 10px;">
+                        <!-- form pour les contrôles de configuration -->
+                        <h4 style="color: #e74c3c; margin-bottom: 15px;">⚙️ Configuration</h4>
+                        <div>
+                            <label for="speedSlider">Vitesse de déplacement:</label>
+                            <input type="range" id="speedSlider" name="speedSlider" min="1" max="10" value="5" style="width: 100%; margin: 10px 0;">
+                        </div>
+                        <div>
+                            <label for="trajectoryType">Type de trajectoire:</label>
+                            <select id="trajectoryType" name="trajectoryType" style="width: 100%; padding: 5px; margin-top: 5px;">
+                                <option value="linear">Linéaire</option>
+                                <option value="circular">Circulaire</option>
+                                <option value="random">Aléatoire</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section id="documentation">
+            <div class="container">
+                <h2 class="section-title">Documentation & Ressources</h2>
+                <ul class="docs-grid"> <!-- ul pour la liste de documents -->
+                    <li class="doc-card">
+                        <figure>
+                            <div class="doc-icon" aria-hidden="true">📊</div>
+                            <figcaption>
+                                <h3>Diagramme de GANTT</h3>
+                                <p>Planification détaillée du projet avec jalons et dépendances des tâches.</p>
+                                <button class="btn btn-primary">Télécharger</button> <!-- Ou un <a> stylé en bouton si c'est un lien -->
+                                <a href="docs/Gantt_SAé24.gan" target="_blank" class="btn btn-primary">Consulter</a>
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li class="doc-card">
+                        <figure>
+                            <div class="doc-icon" aria-hidden="true">🗄️</div>
+                            <figcaption>
+                                <h3>Modèle Entité-Association</h3>
+                                <p>Structure de la base de données avec relations et contraintes d'intégrité.</p>
+                                <button class="btn btn-primary">Consulter</button>
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li class="doc-card">
+                        <figure>
+                            <div class="doc-icon" aria-hidden="true">📈</div>
+                            <figcaption>
+                                <h3>Cartographie des Amplitudes</h3>
+                                <p>Analyse des niveaux sonores et mapping des zones de réception optimale.</p>
+                                <button class="btn btn-primary">Visualiser</button>
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li class="doc-card">
+                        <figure>
+                            <div class="doc-icon" aria-hidden="true">🔧</div>
+                            <figcaption>
+                                <h3>Fiches Techniques</h3>
+                                <p>Instructions d'installation et configuration des capteurs et équipements.</p>
+                                <button class="btn btn-primary">Accéder</button>
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li class="doc-card">
+                        <figure>
+                            <div class="doc-icon" aria-hidden="true">⚠️</div>
+                            <figcaption>
+                                <h3>Synthèse des Problèmes</h3>
+                                <p>Problèmes rencontrés durant le développement et solutions apportées.</p>
+                                <button class="btn btn-primary">Lire</button>
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li class="doc-card">
+                        <figure>
+                            <div class="doc-icon" aria-hidden="true">💻</div>
+                            <figcaption>
+                                <h3>Code Source GitHub</h3>
+                                <p>Accès au dépôt Git avec code source complet, documentation et exemples.</p>
+                                <a href="https://github.com/KryptoWard/SA-24/tree/main" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Accéder</a> <!-- Mieux avec un <a> pour un lien externe -->
+                            </figcaption>
+                        </figure>
+                    </li>
+                </ul>
+
+                <aside class="full-presentation" style="background: #2c3e50; color: white; padding: 40px; border-radius: 15px; margin-top: 50px; text-align: center;">
+                    <h3>📋 Présentation Complète</h3>
+                    <p style="margin-bottom: 25px;">Accédez à la présentation PowerPoint complète du projet SAÉ24 avec tous les détails techniques et résultats.</p>
+                    <a href="docs/sae24.pdf" class="btn btn-primary" style="background: #e74c3c;" download>📥 Télécharger la Présentation PDF</a>
+                </aside>
+            </div>
+        </section>
+
+        <section id="planning">
+            <div class="container">
+                <h2 class="section-title">Planning & Étapes</h2>
+                <div class="section-content">
+                    <ol class="timeline"> <!-- ol pour une liste ordonnée (étapes séquentielles) -->
+                        <li class="timeline-item">
+                            <div class="timeline-content">
+                                <h3>Phase 1 - Recherche & Conception</h3>
+                                <p>Analyse des besoins, étude de faisabilité technique, conception de l'architecture système des deux approches (son et ultrasons) et définition des protocoles de communication. Mise en place d'un Gant et d'un Trello.</p>
+                                <time datetime="2025-05-28/2025-06-06">25 Mai 2025 - 6 Juin 2025</time> <!-- time pour les dates -->
+                            </div>
+                        </li>
+                        <li class="timeline-item">
+                            <div class="timeline-content">
+                                <h3>Phase 2 - Développement Infrastructure</h3>
+                                <p>Mise en place de l'infrastructure MQTT, développement des interfaces Raspberry Pi, configuration des capteurs et création de la base de données.</p>
+                                <time datetime="2025-06-06/2025-06-12">6 Juin 2025 - 12 Juin 2025</time>
+                            </div>
+                        </li>
+                        <li class="timeline-item">
+                            <div class="timeline-content">
+                                <h3>Phase 3 - Implémentation Algorithmes</h3>
+                                <p>Développement des algorithmes de localisation (FSK pour le son, trilatération pour ultrasons), optimisation des calculs et tests de précision.</p>
+                                <time datetime="2025-06-17/2025-06-19"> 17 Juin 2025 - 19 Juin 2025</time>
+                            </div>
+                        </li>
+                        <li class="timeline-item">
+                            <div class="timeline-content">
+                                <h3>Phase 4 - Tests & Validation</h3>
+                                <p>Tests complets en environnement virtuel, validation des objectifs minimaux, optimisations finales et finalisation de la documentation technique.</p>
+                                <time datetime="2025-06-23/2025-06-24">23 Juin 2025 - 24 Juin 2025</time>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+        </section>
+
+        <section id="equipe">
+            <div class="container">
+                <h2 class="section-title">L'Équipe Projet</h2>
+                <ul class="team-grid"> <!-- ul pour la liste des membres -->
+                    <li class="team-member">
+                        <figure>
+                            <div class="member-avatar" aria-hidden="true">AA</div>
+                            <figcaption>
+                                <h3>Anaïs Audoin</h3>
+                                <p>Cheffe de Projet & Conceptrice de Base de donnée</p>
+                                <p class="member-role-detail" style="color: #666; font-size: 0.9rem;">Responsable architecture système et intégration de la base de donnée</p>
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li class="team-member">
+                        <figure>
+                            <div class="member-avatar" aria-hidden="true">YV</div>
+                            <figcaption>
+                                <h3>Yanis Vogt</h3>
+                                <p>Partie mathématique</p>
+                                <p class="member-role-detail" style="color: #666; font-size: 0.9rem;">Chargé de faire les calculs mathématiques nécessaire pour la simulation</p>
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li class="team-member">
+                        <figure>
+                            <div class="member-avatar" aria-hidden="true">GR</div>
+                            <figcaption>
+                                <h3>Gabriel Roques</h3>
+                                <p>Développe le site web et la partie IoT avec des capteurs virtuels</p>
+                                <p class="member-role-detail" style="color: #666; font-size: 0.9rem;">Mise en place du site web de présentation du projet et des capteurs qui renvoient des données d'exemple</p>
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li class="team-member">
+                        <figure>
+                            <div class="member-avatar" aria-hidden="true">EP</div>
+                            <figcaption>
+                                <h3>Ethan Peyre</h3>
+                                <p>Expert Traitement du Signal</p>
+                                <p class="member-role-detail" style="color: #666; font-size: 0.9rem;">Algorithmes de localisation et modulation FSK</p>
+                            </figcaption>
+                        </figure>
+                    </li>
+                    <li class="team-member">
+                        <figure>
+                            <div class="member-avatar" aria-hidden="true">SZ</div>
+                            <figcaption>
+                                <h3>Simon Zenden</h3>
+                                <p>Également sur la Partie Mathématique</p>
+                                <p class="member-role-detail" style="color: #666; font-size: 0.9rem;">Mise en place d'une infrastructure python pour les calculs et conception du tableau.</p>
+                            </figcaption>
+                        </figure>
+                    </li>
+                </ul>
+
+                <aside class="pedagogical-supervision" style="background: #ecf0f1; padding: 30px; border-radius: 15px; margin-top: 40px; text-align: center;">
+                    <h3 style="color: #2c3e50; margin-bottom: 20px;">🎓 Encadrement Pédagogique</h3>
+                    <dl>
+                        <div><dt>Professeur R&T:</dt> <dd>Khalid Massaoudi - Responsable Réseaux</dd></div>
+                        <div><dt>Professeur R&T:</dt> <dd>Alain Roux - Responsable Télécommunications</dd></div>
+                    </dl>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 30px;">
+                <div>
+                    <h3 style="margin-bottom: 15px;">📧 Contact</h3>
+                    <address> <!-- address pour les infos de contact -->
+                        <a href="mailto:roques.gabriel.iut@gmail.com">roques.gabriel.iut@gmail.com</a><br>
+                    </address>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 15px;">🏫 Institution</h3>
+                    <p>IUT Réseaux & Télécommunications<br>
+                    Université de Technologie</p>
+                </div>
+                <div>
+                    <h3 style="margin-bottom: 15px;">🔗 Liens Utiles</h3>
+                    <ul>
+                        <li><a href="https://github.com/KryptoWard/SA-24/tree/main" style="color: #3498db;" target="_blank" rel="noopener noreferrer">GitHub du Projet</a></li>
+                        <li><a href="#documentation" style="color: #3498db;">Documentation Technique</a></li> <!-- Lien interne -->
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-copyright" style="border-top: 1px solid #34495e; padding-top: 20px; text-align: center;">
+                <p>© <time datetime="2025">2025</time> SAÉ24 - Localisation en Environnement Intérieur. Tous droits réservés.</p>
+                <p style="font-size: 0.9rem; opacity: 0.8;">Projet réalisé dans le cadre de la formation RT - IUT</p>
+            </div>
+        </div>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>

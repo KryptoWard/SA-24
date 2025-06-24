@@ -1,9 +1,3 @@
--- SQL script that defines the table used to
--- store all simulation recordings. Run once to
--- prepare the MySQL database before launching
--- the simulator. Removes any old table and
--- recreates a new one with fields for distances,
--- raw values and estimated positions.
 -- Supprime l'ancienne table si elle existe
 DROP TABLE IF EXISTS enregistrements;
 

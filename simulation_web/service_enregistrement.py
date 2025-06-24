@@ -1,9 +1,3 @@
-"""Service that subscribes to MQTT topics,
-processes sensor data and saves computed
-positions into the MySQL database. It
-performs trilateration for each sample and
-inserts the results so the website can
-display them."""
 import paho.mqtt.client as mqtt
 import mysql.connector
 from mysql.connector import Error

@@ -1,10 +1,4 @@
 <!DOCTYPE html>
-<!--
-  Tool for building printable reports from the
-  simulation data with various configuration options.
-  Generates a PDF-like layout summarizing recent
-  trajectories or heatmaps for offline review.
--->
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -254,6 +248,7 @@
                 <a href="comparison.html" class="nav-link">⚖️ Comparaison</a>
                 <a href="#" class="nav-link active">📊 Rapports</a>
                 <a href="admin.html" class="nav-link">⚙️ Admin</a>
+                <a href="projet.html" class="nav-link">⭐ Le projet</a>
             </div>
             <div class="mobile-menu-toggle" id="mobileMenuToggle">
                 <span></span><span></span><span></span>
@@ -267,7 +262,7 @@
             <p>Créez des rapports professionnels automatisés de votre projet IoT</p>
         </div>
 
-        <!-- Report Configuration -->
+        <!-- Configuration du Rapport -->
         <div class="report-builder">
             <h2 class="section-title">⚙️ Configuration du Rapport</h2>
             
@@ -423,7 +418,7 @@
                     });
                 }
                 
-                // Template selection
+                // Sélection de template
                 document.querySelectorAll('.template-card').forEach(card => {
                     card.addEventListener('click', () => {
                         document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
@@ -432,7 +427,7 @@
                     });
                 });
 
-                // Action buttons
+                // Boutons d'action
                 document.getElementById('previewBtn').addEventListener('click', () => this.generatePreview());
                 document.getElementById('generatePDFBtn').addEventListener('click', () => this.generatePDF());
                 document.getElementById('generateHTMLBtn').addEventListener('click', () => this.generateHTML());
@@ -560,8 +555,8 @@
                 const soundAccuracy = soundData.length > 0 ? this.calculateRealAccuracy([], soundData) : 0;
                 return {
                     ultrasonAccuracy, soundAccuracy,
-                    responseTime: 15 + Math.random() * 20, // Simulated
-                    dataLoss: Math.max(0, (1 - (ultrasonData.length + soundData.length) / 1000) * 100) // Simulated
+                    responseTime: 15 + Math.random() * 20, // Simulé
+                    dataLoss: Math.max(0, (1 - (ultrasonData.length + soundData.length) / 1000) * 100) // Simulé
                 };
             }
 
