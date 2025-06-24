@@ -70,7 +70,7 @@ Les données sont :
 2. Lancer le script d'enregistrement :
 python3 service_enregistrement.py
 3. Placer les fichiers web dans un serveur local (ex : XAMPP, Apache)
-4. Configurer les accès MySQL dans db.php si nécessaire
+4. Configurer les accès MySQL dans api_get_position.php si nécessaire
 5. Ouvrir index.html dans le navigateur
 
 ## 👥 Auteurs
