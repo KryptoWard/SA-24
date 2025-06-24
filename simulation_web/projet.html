@@ -5,17 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SAÉ24 - Localisation en Environnement Intérieur</title>
     <link rel="stylesheet" type="text/css" href="styles2.css">
-    <!-- Le script.js sera inclus à la fin du body -->
+    <!-- The script.js will be included at the end of the body -->
 </head>
 <body>
     <nav>
-        <div class="container"> <!-- Ce div est principalement pour le layout CSS, ok de le garder -->
+        <div class="container"> <!-- This div is mainly for the CSS layout, ok to keep it -->
             <div class="nav-container">
-                <a href="#accueil" class="logo">SAÉ24</a> <!-- Le logo peut être un lien vers l'accueil -->
+                <a href="#accueil" class="logo">SAÉ24</a> <!-- The logo can be a link to the home section -->
                 <ul class="nav-menu">
                     <li><a href="./index.html">Accueil</a></li>
                     <li><a href="#accueil">Introduction</a></li>
-                    <li><a href="#projet">Le Projet</a></li>
+                    <li><a href="#projet">Projet</a></li>
                     <li><a href="#methodologies">Méthodologies</a></li>
                     <li><a href="#demonstrations">Démonstrations</a></li>
                     <li><a href="#documentation">Documentation</a></li>
@@ -27,7 +27,7 @@
     </nav>
 
     <main>
-        <header id="accueil" class="hero-section"> <!-- header peut être utilisé pour l'intro principale -->
+        <header id="accueil" class="hero-section"> <!-- header can be used for the main intro -->
             <div class="container">
                 <div class="hero-content">
                     <h1 class="hero-title">SAÉ24</h1>
@@ -38,7 +38,7 @@
                         et technologies de communication pour répondre aux défis de la géolocalisation indoor.
                     </p>
                     <div class="approach-badges">
-                        <span class="badge">🔊 Localisation par Son</span> <!-- span est ok pour des "badges" stylés -->
+                        <span class="badge">🔊 Localisation par Son</span> <!-- span is ok for styled "badges" -->
                         <span class="badge">📡 Localisation par Ultrasons</span>
                     </div>
                 </div>
@@ -47,9 +47,9 @@
 
         <section id="projet">
             <div class="container">
-                <h2 class="section-title">Le Projet</h2>
+                <h2 class="section-title">Projet</h2>
 
-                <article class="project-context"> <!-- Article pour une section de contenu auto-suffisante -->
+                <article class="project-context"> <!-- Article for a self-contained content section -->
                     <h3 style="color: #2980b9; margin-bottom: 20px;">Contexte et Problématique</h3>
                     <p style="font-size: 1.2rem; color: #555;">
                         La localisation en environnement intérieur représente un défi technologique majeur. Contrairement aux espaces extérieurs
@@ -60,9 +60,9 @@
 
                 <div class="project-objectives">
                     <h3 style="text-align: center; margin-bottom: 30px; color: #2c3e50;">Objectifs Minimaux du Projet</h3>
-                    <ul class="objectives-grid"> <!-- ul pour une liste d'objectifs -->
+                    <ul class="objectives-grid"> <!-- ul for a list of objectives -->
                         <li class="objective-card">
-                            <h4>🏢 Gestion de Salle</h4> <!-- h4 car sous-section de h3 -->
+                            <h4>🏢 Gestion de Salle</h4> <!-- h4 because it's a subsection of h3 -->
                             <p>Mise en place d'un système de gestion d'une salle de référence avec cartographie précise et positionnement des capteurs.</p>
                         </li>
                         <li class="objective-card">
@@ -89,10 +89,10 @@
                 </div>
 
                 <aside class="critical-learnings" style="background: #ecf0f1; padding: 30px; border-radius: 15px; margin-top: 40px;">
-                    <!-- aside pour du contenu tangentiellement lié -->
+                    <!-- aside for tangentially related content -->
                     <h3 style="text-align: center; color: #2c3e50; margin-bottom: 20px;">Apprentissages Critiques Mobilisés</h3>
                     <dl style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px;">
-                        <!-- dl (description list) pour les apprentissages -->
+                        <!-- dl (description list) for the critical learnings -->
                         <div style="text-align: center;">
                             <dt><strong style="color: #e74c3c;">RT1</strong></dt>
                             <dd>Administrer les réseaux et l'Internet</dd>
@@ -114,12 +114,12 @@
             <div class="container">
                 <h2 class="section-title">Méthodologies & Approches Techniques</h2>
 
-                <article class="approach-section"> <!-- Chaque approche est un article -->
+                <article class="approach-section"> <!-- Each approach is an article -->
                     <h3 class="approach-title">🔊 Localisation par le Son</h3>
                     <p style="text-align: center; font-size: 1.1rem; margin-bottom: 30px; color: #555;">
                         Utilisation de signaux sonores modulés FSK pour déterminer la position d'objets par analyse d'atténuation et triangulation.
                     </p>
-                    <ul class="tech-specs"> <!-- ul pour la liste des spécifications techniques -->
+                    <ul class="tech-specs"> <!-- ul for the list of technical specifications -->
                         <li class="spec-card">
                             <h4>📐 Plan de la Pièce</h4>
                             <p>Grille 16x16 cases avec positionnement stratégique des microphones pour une couverture optimale de la zone.</p>
@@ -182,7 +182,7 @@
 
                 <aside class="common-infrastructure" style="background: #2c3e50; color: white; padding: 30px; border-radius: 15px; margin-top: 40px; text-align: center;">
                     <h3 style="margin-bottom: 20px;">🏗️ Infrastructure Commune</h3>
-                    <!-- Ceci est une liste, utilisons ul -->
+                    <!-- This is a list, let's use ul -->
                     <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
                         <li>MQTT Broker (Mosquitto)</li>
                         <li>Base de données MySQL/InfluxDB</li>
@@ -200,10 +200,10 @@
                     Cette section présente les fonctionnalités clés du système en action à travers des simulations interactives.
                 </p>
 
-                <figure class="demo-container"> <!-- Figure pour la visualisation avec sa légende implicite (h3) -->
+                <figure class="demo-container"> <!-- Figure for the visualization with its implicit caption (h3) -->
                     <h3 style="text-align: center; color: #2c3e50; margin-bottom: 30px;">Visualisation de la Salle E103</h3>
                     <div class="room-grid" id="roomGrid" role="img" aria-label="Grille de la salle E103 avec capteurs et objet suivi">
-                        <!-- role="img" et aria-label pour l'accessibilité si c'est purement visuel -->
+                        <!-- role="img" and aria-label for accessibility if it's purely visual -->
                         <div class="grid-lines" id="gridLines"></div>
                         <div class="sensor" style="top: 10%; left: 10%;" title="Microphone 1"></div>
                         <div class="sensor" style="top: 10%; right: 10%;" title="Microphone 2"></div>
@@ -226,15 +226,15 @@
                 <div class="simulation-details" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-top: 40px;">
                     <aside class="realtime-data" style="background: #ecf0f1; padding: 25px; border-radius: 10px;">
                         <h4 style="color: #2980b9; margin-bottom: 15px;">📊 Données Temps Réel</h4>
-                        <dl id="liveData"> <!-- dl pour les paires clé/valeur -->
-                            <div><dt>Position X:</dt> <dd id="posX">--</dd></div> <!-- dd représente "l'élément de détail d'une description"-->
+                        <dl id="liveData"> <!-- dl for key/value pairs -->
+                            <div><dt>Position X:</dt> <dd id="posX">--</dd></div> <!-- dd represents the "description detail element" -->
                             <div><dt>Position Y:</dt> <dd id="posY">--</dd></div>
                             <div><dt>Précision:</dt> <dd id="accuracy">--</dd></div>
                             <div><dt>Dernière MAJ:</dt> <dd id="lastUpdate">--</dd></div>
                         </dl>
                     </aside>
                     <form class="configuration-panel" style="background: #ecf0f1; padding: 25px; border-radius: 10px;">
-                        <!-- form pour les contrôles de configuration -->
+                        <!-- form for the configuration controls -->
                         <h4 style="color: #e74c3c; margin-bottom: 15px;">⚙️ Configuration</h4>
                         <div>
                             <label for="speedSlider">Vitesse de déplacement:</label>
@@ -256,15 +256,14 @@
         <section id="documentation">
             <div class="container">
                 <h2 class="section-title">Documentation & Ressources</h2>
-                <ul class="docs-grid"> <!-- ul pour la liste de documents -->
+                <ul class="docs-grid"> <!-- ul for the list of documents -->
                     <li class="doc-card">
                         <figure>
                             <div class="doc-icon" aria-hidden="true">📊</div>
                             <figcaption>
                                 <h3>Diagramme de GANTT</h3>
                                 <p>Planification détaillée du projet avec jalons et dépendances des tâches.</p>
-                                <button class="btn btn-primary">Télécharger</button> <!-- Ou un <a> stylé en bouton si c'est un lien -->
-                                <a href="docs/Gantt_SAé24.gan" target="_blank" class="btn btn-primary">Consulter</a>
+                                <a href="./docs/Gantt_SAé24.png" target="_blank" class="btn btn-primary">Consulter</a>
                             </figcaption>
                         </figure>
                     </li>
@@ -274,7 +273,7 @@
                             <figcaption>
                                 <h3>Modèle Entité-Association</h3>
                                 <p>Structure de la base de données avec relations et contraintes d'intégrité.</p>
-                                <button class="btn btn-primary">Consulter</button>
+                                <a href="docs/db.png" target="_blank" class="btn btn-primary">Consulter</a>
                             </figcaption>
                         </figure>
                     </li>
@@ -284,7 +283,7 @@
                             <figcaption>
                                 <h3>Cartographie des Amplitudes</h3>
                                 <p>Analyse des niveaux sonores et mapping des zones de réception optimale.</p>
-                                <button class="btn btn-primary">Visualiser</button>
+                                <a href="./amplitude_map.html" target="_blank" class="btn btn-primary">Visiter</a>
                             </figcaption>
                         </figure>
                     </li>
@@ -294,7 +293,7 @@
                             <figcaption>
                                 <h3>Fiches Techniques</h3>
                                 <p>Instructions d'installation et configuration des capteurs et équipements.</p>
-                                <button class="btn btn-primary">Accéder</button>
+                                <a href="./docs/fiche_technique.pdf" target="_blank" class="btn btn-primary">Consulter</a>
                             </figcaption>
                         </figure>
                     </li>
@@ -304,7 +303,7 @@
                             <figcaption>
                                 <h3>Synthèse des Problèmes</h3>
                                 <p>Problèmes rencontrés durant le développement et solutions apportées.</p>
-                                <button class="btn btn-primary">Lire</button>
+                                <a href="./docs/synthese_problemes.html" target="_blank" class="btn btn-primary">Accéder</a>
                             </figcaption>
                         </figure>
                     </li>
@@ -314,17 +313,11 @@
                             <figcaption>
                                 <h3>Code Source GitHub</h3>
                                 <p>Accès au dépôt Git avec code source complet, documentation et exemples.</p>
-                                <a href="https://github.com/KryptoWard/SA-24/tree/main" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Accéder</a> <!-- Mieux avec un <a> pour un lien externe -->
+                                <a href="https://github.com/KryptoWard/SA-24/tree/main" class="btn btn-primary" target="_blank" rel="noopener noreferrer">Accéder</a> <!-- Better with an <a> for an external link -->
                             </figcaption>
                         </figure>
                     </li>
                 </ul>
-
-                <aside class="full-presentation" style="background: #2c3e50; color: white; padding: 40px; border-radius: 15px; margin-top: 50px; text-align: center;">
-                    <h3>📋 Présentation Complète</h3>
-                    <p style="margin-bottom: 25px;">Accédez à la présentation PowerPoint complète du projet SAÉ24 avec tous les détails techniques et résultats.</p>
-                    <a href="docs/sae24.pdf" class="btn btn-primary" style="background: #e74c3c;" download>📥 Télécharger la Présentation PDF</a>
-                </aside>
             </div>
         </section>
 
@@ -332,12 +325,12 @@
             <div class="container">
                 <h2 class="section-title">Planning & Étapes</h2>
                 <div class="section-content">
-                    <ol class="timeline"> <!-- ol pour une liste ordonnée (étapes séquentielles) -->
+                    <ol class="timeline"> <!-- ol for an ordered list (sequential steps) -->
                         <li class="timeline-item">
                             <div class="timeline-content">
                                 <h3>Phase 1 - Recherche & Conception</h3>
                                 <p>Analyse des besoins, étude de faisabilité technique, conception de l'architecture système des deux approches (son et ultrasons) et définition des protocoles de communication. Mise en place d'un Gant et d'un Trello.</p>
-                                <time datetime="2025-05-28/2025-06-06">25 Mai 2025 - 6 Juin 2025</time> <!-- time pour les dates -->
+                                <time datetime="2025-05-28/2025-06-06">25 Mai 2025 - 6 Juin 2025</time> <!-- time for dates -->
                             </div>
                         </li>
                         <li class="timeline-item">
@@ -369,7 +362,7 @@
         <section id="equipe">
             <div class="container">
                 <h2 class="section-title">L'Équipe Projet</h2>
-                <ul class="team-grid"> <!-- ul pour la liste des membres -->
+                <ul class="team-grid"> <!-- ul for the list of members -->
                     <li class="team-member">
                         <figure>
                             <div class="member-avatar" aria-hidden="true">AA</div>
@@ -438,7 +431,7 @@
             <div class="footer-content" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 40px; margin-bottom: 30px;">
                 <div>
                     <h3 style="margin-bottom: 15px;">📧 Contact</h3>
-                    <address> <!-- address pour les infos de contact -->
+                    <address> <!-- address for contact info -->
                         <a href="mailto:roques.gabriel.iut@gmail.com">roques.gabriel.iut@gmail.com</a><br>
                     </address>
                 </div>
@@ -451,7 +444,7 @@
                     <h3 style="margin-bottom: 15px;">🔗 Liens Utiles</h3>
                     <ul>
                         <li><a href="https://github.com/KryptoWard/SA-24/tree/main" style="color: #3498db;" target="_blank" rel="noopener noreferrer">GitHub du Projet</a></li>
-                        <li><a href="#documentation" style="color: #3498db;">Documentation Technique</a></li> <!-- Lien interne -->
+                        <li><a href="#documentation" style="color: #3498db;">Documentation Technique</a></li> <!-- Internal link -->
                     </ul>
                 </div>
             </div>

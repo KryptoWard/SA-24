@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="styles.css">
 
     <style>
-        /* Styles spécifiques pour la mise en page de cette page */
+        /* Specific styles for this page layout */
         .page-layout {
             display: grid;
-            grid-template-columns: 1fr 1.5fr; /* Deux colonnes: explications à gauche, visualiseur à droite */
+            grid-template-columns: 1fr 1.5fr; /* Two columns: explanations on the left, visualizer on the right */
             gap: 30px;
             align-items: flex-start;
         }
@@ -80,7 +80,7 @@
 
         @media (max-width: 1024px) {
             .page-layout {
-                grid-template-columns: 1fr; /* Une seule colonne sur les écrans plus petits */
+                grid-template-columns: 1fr; /* Single column on smaller screens */
             }
         }
     </style>
@@ -91,7 +91,7 @@
             <div class="logo">SAÉ24 Simulation Avancée</div>
             <div class.nav-links" id="navLinks">
                 <a href="index.html" class="nav-link">🏠 Accueil</a>
-                <a href="projet.html" class="nav-link">⭐ Le projet</a>
+                <a href="projet.html" class="nav-link">⭐ Projet</a>
                 <a href="monitoring.html" class="nav-link">📊 Monitoring</a>
                 <a href="heatmap.html" class="nav-link">🔥 Heatmap</a>
                 <a href="#" class="nav-link" style="background: rgba(255,255,255,0.2);">🔉 Cartographie</a>
@@ -163,13 +163,17 @@
     </main>
 
     <script>
+        // AmplitudeMapper class handles the amplitude heatmap visualization and sensor drawing
         class AmplitudeMapper {
             constructor() {
+                // Get canvas and context
                 this.canvas = document.getElementById('amplitudeHeatmap');
                 this.ctx = this.canvas.getContext('2d');
 
+                // Room dimensions in meters
                 this.roomWidth = 8.0;
                 this.roomHeight = 8.0;
+                // Sensors dictionary: each sensor has a position (in meters) and a color
                 this.sensors = {
                     'A': { pos: [0.25, 0.25], color: '#00FFFF' },
                     'B': { pos: [0.25, 7.75], color: '#FF00FF' },
@@ -178,9 +182,10 @@
                 
                 this.initCanvas();
                 this.initEventListeners();
-                this.generateHeatmap(); // Générer la carte au chargement
+                this.generateHeatmap(); // Generate the map on load
             }
 
+            // Set canvas size to match its displayed size and handle window resizing
             initCanvas() {
                 this.canvas.width = this.canvas.offsetWidth;
                 this.canvas.height = this.canvas.offsetHeight;
@@ -191,6 +196,7 @@
                 });
             }
 
+            // Set up UI event listeners for controls and mobile menu
             initEventListeners() {
                 document.getElementById('resolution').addEventListener('change', () => this.generateHeatmap());
                 document.getElementById('sourcePower').addEventListener('input', (e) => {
@@ -198,7 +204,7 @@
                     this.generateHeatmap();
                 });
 
-                // Script pour le menu mobile
+                // Mobile menu script: toggles navigation visibility on small screens
                 const mobileMenuToggle = document.getElementById('mobileMenuToggle');
                 const navLinks = document.getElementById('navLinks');
                 if(mobileMenuToggle && navLinks) {
@@ -209,10 +215,12 @@
                 }
             }
 
+            // Compute Euclidean distance between two points in the room
             calculateDistance(p1, p2) {
                 return Math.hypot(p1[0] - p2[0], p1[1] - p2[1]);
             }
 
+            // Main function to generate the amplitude heatmap
             generateHeatmap() {
                 const resolution = parseInt(document.getElementById('resolution').value);
                 const sourcePower = parseInt(document.getElementById('sourcePower').value);
@@ -222,26 +230,30 @@
                 const cellWidth = this.canvas.width / resolution;
                 const cellHeight = this.canvas.height / resolution;
 
+                // For each cell in the grid, compute the average amplitude received by all sensors
                 for (let x = 0; x < resolution; x++) {
                     for (let y = 0; y < resolution; y++) {
+                        // Convert grid coordinates to real room coordinates (meters)
                         const realX = (x / resolution) * this.roomWidth;
                         const realY = (y / resolution) * this.roomHeight;
                         
                         let totalAmplitude = 0;
+                        // For each sensor, calculate the amplitude received from a source at (realX, realY)
                         Object.values(this.sensors).forEach(sensor => {
                             const distance = this.calculateDistance([realX, realY], sensor.pos);
-                            if (distance > 0.1) { // Éviter division par zéro
+                            if (distance > 0.1) { // Avoid division by zero or very small values
+                                // Inverse square law: amplitude decreases with the square of the distance
                                 totalAmplitude += sourcePower / (distance * distance);
                             }
                         });
                         
                         const avgAmplitude = totalAmplitude / Object.keys(this.sensors).length;
                         
-                        // Normaliser l'amplitude (log scale pour un meilleur rendu visuel)
+                        // Normalize amplitude for color mapping (logarithmic scale for better visual contrast)
                         const normalizedAmplitude = Math.min(1, Math.log10(avgAmplitude + 1) / 3);
                         
-                        // Déterminer la couleur : de bleu (froid) à rouge (chaud)
-                        // 240 (bleu) -> 120 (vert) -> 60 (jaune) -> 0 (rouge)
+                        // Determine color: blue (cold) to red (hot)
+                        // Hue goes from 240 (blue) to 0 (red) as amplitude increases
                         const hue = 240 - (normalizedAmplitude * 240);
                         const saturation = 80;
                         const lightness = 40 + (normalizedAmplitude * 25);
@@ -254,8 +266,10 @@
                 this.drawSensors();
             }
 
+            // Draw each sensor as a colored circle on the canvas
             drawSensors() {
                 Object.values(this.sensors).forEach(sensor => {
+                    // Convert sensor position (meters) to canvas pixels
                     const x_px = (sensor.pos[0] / this.roomWidth) * this.canvas.width;
                     const y_px = (sensor.pos[1] / this.roomHeight) * this.canvas.height;
                     
@@ -270,6 +284,7 @@
             }
         }
 
+        // Instantiate AmplitudeMapper when the page is loaded
         window.addEventListener('load', () => new AmplitudeMapper());
     </script>
 </body>
