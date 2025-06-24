@@ -24,7 +24,7 @@
             position: relative;
         }
 
-        /* On conserve les bordures colorées pour la distinction */
+        /* Keep colored borders for distinction */
         .sensor-panel.ultrason {
             border-color: #3498db;
         }
@@ -144,7 +144,7 @@
 
         .metric-bars {
             display: flex;
-            align-items: flex-end; /* Correction de 'end' vers 'flex-end' */
+            align-items: flex-end; /* Corrected 'end' to 'flex-end' */
             justify-content: center;
             gap: 10px;
             height: 80px;
@@ -176,7 +176,7 @@
             width: 12px;
             height: 12px;
             border-radius: 50%;
-            background: #e74c3c; /* Rouge par défaut (inactif) */
+            background: #e74c3c; /* Default red (inactive) */
         }
 
         .status-indicator.active {
@@ -363,7 +363,7 @@
     </main>
 
     <script>
-        // Le script JavaScript est conservé ici sans modification
+        // The JavaScript code is kept here without changes
         class SensorComparator {
             constructor() {
                 this.isRunning = false;
@@ -554,10 +554,10 @@
             }
 
             clearDisplays() {
-                this.updateDisplays(); // Met à jour avec des données vides
+                this.updateDisplays(); // Update with empty data
                 this.animateMetric('precisionUltrason', 0, 'precisionUltrasonValue', '--%');
                 this.animateMetric('precisionSound', 0, 'precisionSoundValue', '--%');
-                // ... reset autres métriques
+                // ... reset other metrics
             }
 
             drawCanvases() {
