@@ -1,4 +1,9 @@
 <?php
+// API endpoint returning the last recorded positions
+// stored in the database, optionally filtered by type.
+// It exposes recent ultrason or sound data to the web
+// interface and can return both lists at once.
+// Results are encoded as JSON.
 // Indiquer au navigateur que la réponse est au format JSON
 header('Content-Type: application/json');
 
