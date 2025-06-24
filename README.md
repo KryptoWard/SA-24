@@ -32,19 +32,33 @@ Les données sont :
 
 ## 🗂️ Arborescence du projet
 ├── index.html # Accueil général
+
 ├── admin.html # Gestion des données
+
 ├── monitoring.html # Monitoring en temps réel
+
 ├── trajectory.html # Carte de trajectoire
+
 ├── amplitude_map.html # Carte d’amplitude
+
 ├── comparison.html # Comparaison des méthodes
+
 ├── reports.html # Résumés de mesures
+
 ├── api_get_positions.php # API - Récupération JSON
+
 ├── api_clear_db.php # API - Suppression des enregistrements
+
 ├── service_enregistrement.py # Script Python MQTT → DB
+
 ├── simulateur.py # Simulation de données
+
 ├── database_setup.sql # Script SQL pour la BDD
+
 ├── visualisation.js # Affichage sur canvas
+
 ├── script.js # Scripts interactifs
+
 ├── styles.css / styles2.css # Feuilles de style
 
 
