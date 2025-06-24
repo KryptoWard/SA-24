@@ -3,35 +3,152 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAÉ24 - Visualisation de Localisation</title>
+    <title>SAÉ24 - Simulation Avancée</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+
     <nav>
         <div class="container nav-container">
-            <div class="logo">SAÉ24 Simulation</div>
+            <div class="logo">SAÉ24 Simulation Avancée</div>
+            <div class="nav-links" id="navLinks">
+                <a href="#demo" class="nav-link">🏠 Accueil</a>
+                <a href="monitoring.html" class="nav-link">📊 Monitoring</a>
+                <a href="heatmap.html" class="nav-link">🔥 Heatmap</a>
+                <a href="trajectory.html" class="nav-link">🎯 Trajectoires</a>
+                <a href="comparison.html" class="nav-link">⚖️ Comparaison</a>
+                <a href="reports.html" class="nav-link">📊 Rapports</a>
+                <a href="admin.html" class="nav-link">⚙️ Admin</a>
+            </div>
+            <div class="mobile-menu-toggle" id="mobileMenuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </nav>
 
     <header>
         <div class="hero-content">
             <h1 class="hero-title">Visualisation en Temps Réel</h1>
-            <p class="hero-subtitle">Simulation de localisation par trilatération</p>
+            <p class="hero-subtitle">Simulation de localisation par Ultrason & Amplitude Sonore</p>
         </div>
     </header>
 
     <main class="container">
         <section id="demo">
             <div class="demo-container">
-                <h2 class="section-title">Démonstration</h2>
-                <div class="room-grid" id="roomGrid">
-                    <canvas id="simulationCanvas"></canvas>
-                </div>
-                <div class="control-panel">
-                    <div class="status-panel" id="statusPanel">
-                        Statut : En attente de données...
+                <h2 class="section-title">Démonstration Interactive</h2>
+                
+                <!-- Conteneur pour les deux visualisations -->
+                <div class="dual-visualization">
+                    <!-- Visualisation Ultrason -->
+                    <div class="visualization-panel">
+                        <h3 class="panel-title">🔊 Capteurs Ultrason</h3>
+                        <div class="room-grid" id="roomGridUltrason">
+                            <canvas id="simulationCanvasUltrason"></canvas>
+                        </div>
+                        <div class="status-panel" id="statusPanelUltrason">
+                            Ultrason : En attente de données...
+                        </div>
                     </div>
-                    <button class="btn btn-secondary" id="clearDbButton">Effacer les données</button>
+
+                    <!-- Visualisation Son -->
+                    <div class="visualization-panel">
+                        <h3 class="panel-title">🔉 Capteurs Son (Amplitude)</h3>
+                        <div class="room-grid" id="roomGridSon">
+                            <canvas id="simulationCanvasSon"></canvas>
+                        </div>
+                        <div class="status-panel" id="statusPanelSon">
+                            Son : En attente de données...
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-panel">
+                    <button class="btn btn-secondary" id="clearDbButton">Effacer l'historique</button>
+                    <div class="simulator-controls">
+                        <label for="simulatorMode">Mode Simulateur:</label>
+                        <select id="simulatorMode" class="mode-selector">
+                            <option value="ultrasound">Ultrason</option>
+                            <option value="sound">Son (Amplitude)</option>
+                        </select>
+                        <button class="btn btn-primary" id="switchModeButton">Changer Mode</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tools">
+            <div class="tools-container">
+                <h2 class="section-title">🛠️ Outils Avancés</h2>
+                
+                <div class="tools-grid">
+                    <div class="tool-card">
+                        <div class="tool-icon">📊</div>
+                        <h3 class="tool-title">Monitoring Temps Réel</h3>
+                        <p class="tool-description">
+                            Visualisez le fonctionnement en direct des capteurs IoT. 
+                            Observez la conversion des données brutes, les messages MQTT 
+                            et le calcul de trilatération étape par étape.
+                        </p>
+                        <a href="monitoring.html" class="tool-button">🚀 Accéder au Monitoring</a>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-icon">🔥</div>
+                        <h3 class="tool-title">Heatmap de Couverture</h3>
+                        <p class="tool-description">
+                            Analysez les zones de couverture optimale des capteurs. 
+                            Cartographiez les amplitudes, identifiez les zones mortes 
+                            et optimisez le placement des capteurs.
+                        </p>
+                        <a href="heatmap.html" class="tool-button">🔍 Voir la Heatmap</a>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-icon">🎯</div>
+                        <h3 class="tool-title">Analyseur de Trajectoires</h3>
+                        <p class="tool-description">
+                            Rejouez et analysez les mouvements enregistrés. 
+                            Calculez les distances, vitesses et générez des 
+                            statistiques détaillées sur les parcours.
+                        </p>
+                        <a href="trajectory.html" class="tool-button">📈 Analyser les Trajets</a>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-icon">⚖️</div>
+                        <h3 class="tool-title">Comparateur A/B</h3>
+                        <p class="tool-description">
+                            Comparez en temps réel les performances des capteurs 
+                            ultrason et son. Analysez précision, temps de réponse 
+                            et stabilité côte à côte.
+                        </p>
+                        <a href="comparison.html" class="tool-button">⚖️ Comparer Technologies</a>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-icon">📊</div>
+                        <h3 class="tool-title">Générateur de Rapports</h3>
+                        <p class="tool-description">
+                            Créez des rapports professionnels automatisés. 
+                            Choisissez parmi plusieurs modèles et exportez 
+                            en PDF ou HTML avec graphiques intégrés.
+                        </p>
+                        <a href="reports.html" class="tool-button">📋 Créer un Rapport</a>
+                    </div>
+
+                    <div class="tool-card">
+                        <div class="tool-icon">⚙️</div>
+                        <h3 class="tool-title">Dashboard Admin</h3>
+                        <p class="tool-description">
+                            Centre de contrôle complet du système. Configurez 
+                            les paramètres, exportez les données, surveillez 
+                            les performances et gérez la base de données.
+                        </p>
+                        <a href="admin.html" class="tool-button">🎛️ Panneau Admin</a>
+                    </div>
                 </div>
             </div>
         </section>

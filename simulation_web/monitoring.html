@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAÉ24 - Monitoring Temps Réel</title>
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        .monitoring-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .sensor-section {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sensor-section.ultrason { border-left: 5px solid #3498db; }
+        .sensor-section.sound { border-left: 5px solid #27ae60; }
+
+        .sensor-title {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .sensor-data {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .sensor-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .sensor-item.active {
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.3);
+        }
+
+        .sensor-name {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .raw-data { color: #e74c3c; font-size: 1.1rem; margin: 5px 0; }
+        .converted-data { color: #27ae60; font-size: 1.1rem; margin: 5px 0; }
+
+        .data-flow {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .flow-title {
+            color: #2c3e50;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .trilateration-section {
+            grid-column: 1 / -1;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-left: 5px solid #e74c3c;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .coordinates {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .coordinate {
+            background: #f8f9fa;
+            padding: 15px 25px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            text-align: center;
+        }
+
+        .coordinate-label { color: #7f8c8d; font-size: 0.9rem; }
+        .coordinate-value { color: #2c3e50; font-size: 1.3rem; font-weight: bold; }
+
+        .mqtt-log {
+            background: #e9ecef;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 15px;
+            height: 200px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #34495e;
+        }
+
+        .log-entry { margin: 5px 0; padding: 3px 8px; border-radius: 3px; }
+        .log-entry.ultrason { background: rgba(52, 152, 219, 0.1); color: #2980b9; }
+        .log-entry.sound { background: rgba(39, 174, 96, 0.1); color: #219a52; }
+        .log-entry.trilateration { background: rgba(231, 76, 60, 0.1); color: #c0392b; }
+
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .status-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #f8f9fa;
+            color: #5a6c7d;
+            padding: 10px;
+            text-align: center;
+            border-top: 1px solid #dee2e6;
+            z-index: 1001; /* Au-dessus du contenu */
+        }
+        
+        .btn-sound { background: #27ae60 !important; }
+        .btn-sound:hover { background: #219a52 !important; }
+        .btn-stop { background: #e74c3c !important; }
+        .btn-stop:hover { background: #c0392b !important; }
+
+        @media (max-width: 1024px) {
+            .monitoring-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container nav-container">
+            <div class="logo">SAÉ24 Simulation Avancée</div>
+            <div class.nav-links" id="navLinks">
+                <a href="index.html" class="nav-link">🏠 Accueil</a>
+                <a href="#" class="nav-link" style="background: rgba(255,255,255,0.2);">📊 Monitoring</a>
+                <a href="heatmap.html" class="nav-link">🔥 Heatmap</a>
+                <a href="trajectory.html" class="nav-link">🎯 Trajectoires</a>
+                <a href="comparison.html" class="nav-link">⚖️ Comparaison</a>
+                <a href="reports.html" class="nav-link">📊 Rapports</a>
+                <a href="admin.html" class="nav-link">⚙️ Admin</a>
+            </div>
+            <div class="mobile-menu-toggle" id="mobileMenuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="container" style="margin-top: 100px; margin-bottom: 50px;">
+        <h2 class="section-title">🔍 Monitoring Temps Réel</h2>
+        <p style="text-align: center; color: #5a6c7d; max-width: 800px; margin: -30px auto 40px auto;">
+            Visualisation du flux de données brutes depuis les capteurs jusqu'au calcul de la position finale, en passant par les messages MQTT.
+        </p>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="startUltrasonBtn">▶️ Démarrer Ultrason</button>
+            <button class="btn btn-sound" id="startSoundBtn">▶️ Démarrer Son</button>
+            <button class="btn btn-stop" id="stopBtn">⏹️ Arrêter</button>
+        </div>
+
+        <div class="monitoring-grid">
+            <div class="sensor-section ultrason">
+                <h2 class="sensor-title">🔊 Capteurs Ultrason</h2>
+                <div class="sensor-data" id="ultrasonData">
+                    <div class="sensor-item" id="ultrasonA"><div class="sensor-name">Capteur A</div><div class="raw-data" id="ultrasonA_raw">Temps: ---</div><div class="converted-data" id="ultrasonA_dist">Distance: ---</div></div>
+                    <div class="sensor-item" id="ultrasonB"><div class="sensor-name">Capteur B</div><div class="raw-data" id="ultrasonB_raw">Temps: ---</div><div class="converted-data" id="ultrasonB_dist">Distance: ---</div></div>
+                    <div class="sensor-item" id="ultrasonC"><div class="sensor-name">Capteur C</div><div class="raw-data" id="ultrasonC_raw">Temps: ---</div><div class="converted-data" id="ultrasonC_dist">Distance: ---</div></div>
+                </div>
+                <div class="data-flow">
+                    <div class="flow-title">📡 Flux MQTT Ultrason</div>
+                    <div class="mqtt-log" id="ultrasonMqttLog"></div>
+                </div>
+            </div>
+
+            <div class="sensor-section sound">
+                <h2 class="sensor-title">🔉 Capteurs Son (Amplitude)</h2>
+                <div class="sensor-data" id="soundData">
+                    <div class="sensor-item" id="soundA"><div class="sensor-name">Capteur A</div><div class="raw-data" id="soundA_raw">Amplitude: ---</div><div class="converted-data" id="soundA_dist">Distance: ---</div></div>
+                    <div class="sensor-item" id="soundB"><div class="sensor-name">Capteur B</div><div class="raw-data" id="soundB_raw">Amplitude: ---</div><div class="converted-data" id="soundB_dist">Distance: ---</div></div>
+                    <div class="sensor-item" id="soundC"><div class="sensor-name">Capteur C</div><div class="raw-data" id="soundC_raw">Amplitude: ---</div><div class="converted-data" id="soundC_dist">Distance: ---</div></div>
+                </div>
+                <div class="data-flow">
+                    <div class="flow-title">📡 Flux MQTT Son</div>
+                    <div class="mqtt-log" id="soundMqttLog"></div>
+                </div>
+            </div>
+
+            <div class="trilateration-section">
+                <h2 class="sensor-title">🎯 Calcul de Trilatération</h2>
+                <div class="coordinates">
+                    <div class="coordinate"><div class="coordinate-label">Position X</div><div class="coordinate-value" id="positionX">---.--</div></div>
+                    <div class="coordinate"><div class="coordinate-label">Position Y</div><div class="coordinate-value" id="positionY">---.--</div></div>
+                    <div class="coordinate"><div class="coordinate-label">Précision</div><div class="coordinate-value" id="precision">---.--</div></div>
+                </div>
+                <div class="data-flow">
+                    <div class="flow-title">🧮 Log de Trilatération</div>
+                    <div class="mqtt-log" id="trilaterationLog"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="status-bar">
+        <span id="statusText">Système en attente - Cliquez sur un bouton pour démarrer la simulation</span>
+    </div>
+
+    <script>
+        // LE SCRIPT ORIGINAL ET COMPLET EST CONSERVÉ ICI
+        class SensorMonitor {
+            constructor() {
+                this.isRunning = false;
+                this.currentMode = null;
+                this.intervalId = null;
+                this.sensors = ['A', 'B', 'C'];
+                this.sensorPositions = { 'A': [0.25, 0.25], 'B': [0.25, 7.75], 'C': [7.75, 7.75] };
+                this.currentPosition = [4.0, 4.0]; // Position simulée de l'objet
+                this.SPEED_OF_SOUND = 343.0;
+                this.SOUND_SOURCE_POWER = 100;
+                
+                this.initEventListeners();
+            }
+
+            initEventListeners() {
+                document.getElementById('startUltrasonBtn').addEventListener('click', () => {
+                    this.startSimulation('ultrason');
+                });
+                
+                document.getElementById('startSoundBtn').addEventListener('click', () => {
+                    this.startSimulation('sound');
+                });
+                
+                document.getElementById('stopBtn').addEventListener('click', () => {
+                    this.stopSimulation();
+                });
+
+                // Script pour le menu mobile
+                const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+                const navLinks = document.getElementById('navLinks');
+                if(mobileMenuToggle && navLinks) {
+                    mobileMenuToggle.addEventListener('click', () => {
+                        navLinks.classList.toggle('active');
+                        mobileMenuToggle.classList.toggle('active');
+                    });
+                }
+            }
+
+            startSimulation(mode) {
+                if (this.isRunning) {
+                    this.stopSimulation();
+                }
+                
+                this.currentMode = mode;
+                this.isRunning = true;
+                this.updateStatus(`Simulation ${mode} en cours...`);
+                
+                // Mise à jour de la position de l'objet simulé toutes les 2 secondes
+                this.moveObjectRandomly();
+                
+                // Simulation des données de capteurs toutes les 500ms
+                this.intervalId = setInterval(() => {
+                    this.simulateSensorData();
+                }, 500);
+            }
+
+            stopSimulation() {
+                this.isRunning = false;
+                if (this.intervalId) {
+                    clearInterval(this.intervalId);
+                    this.intervalId = null;
+                }
+                this.updateStatus('Simulation arrêtée');
+                this.clearAllData();
+            }
+
+            moveObjectRandomly() {
+                if (!this.isRunning) return;
+                
+                // Générer une nouvelle position aléatoire
+                this.currentPosition = [
+                    Math.random() * 6 + 1, // Entre 1 et 7 mètres
+                    Math.random() * 6 + 1
+                ];
+                
+                // Programmer le prochain mouvement
+                setTimeout(() => this.moveObjectRandomly(), 2000);
+            }
+
+            calculateDistance(pos1, pos2) {
+                return Math.sqrt(Math.pow(pos1[0] - pos2[0], 2) + Math.pow(pos1[1] - pos2[1], 2));
+            }
+
+            simulateSensorData() {
+                if (!this.isRunning) return;
+                
+                let allDistances = {};
+                
+                this.sensors.forEach((sensorId, index) => {
+                    const sensorPos = this.sensorPositions[sensorId];
+                    const realDistance = this.calculateDistance(this.currentPosition, sensorPos);
+                    
+                    // Ajouter un peu de bruit
+                    const noise = (Math.random() - 0.5) * 0.1;
+                    const noisyDistance = realDistance + noise;
+                    
+                    setTimeout(() => {
+                        this.simulateSingleSensor(sensorId, noisyDistance);
+                        allDistances[sensorId] = noisyDistance;
+                        
+                        // Si tous les capteurs ont répondu, calculer la trilatération
+                        if (Object.keys(allDistances).length === 3) {
+                            setTimeout(() => {
+                                this.performTrilateration(allDistances);
+                            }, 200);
+                        }
+                    }, index * 100); // Décalage pour simuler la réception séquentielle
+                });
+            }
+
+            simulateSingleSensor(sensorId, distance) {
+                let rawValue, convertedDistance, topic, payload;
+                
+                if (this.currentMode === 'ultrason') {
+                    // Simuler le temps de vol (aller-retour)
+                    rawValue = (distance * 2) / this.SPEED_OF_SOUND;
+                    convertedDistance = (rawValue * this.SPEED_OF_SOUND) / 2;
+                    topic = `SAE24/ultrason/temps`;
+                    payload = { sensorId, time: rawValue.toFixed(6) };
+                    
+                    document.getElementById(`ultrason${sensorId}_raw`).textContent = `Temps: ${rawValue.toFixed(4)}s`;
+                    document.getElementById(`ultrason${sensorId}_dist`).textContent = `Distance: ${convertedDistance.toFixed(2)}m`;
+                    
+                    const element = document.getElementById(`ultrason${sensorId}`);
+                    element.classList.add('active');
+                    setTimeout(() => element.classList.remove('active'), 1000);
+                    
+                } else if (this.currentMode === 'sound') {
+                    // Simuler l'amplitude (loi inverse du carré)
+                    rawValue = this.SOUND_SOURCE_POWER / (distance * distance);
+                    convertedDistance = Math.sqrt(this.SOUND_SOURCE_POWER / rawValue);
+                    topic = `SAE24/son/amplitude`;
+                    payload = { sensorId, amplitude: rawValue.toFixed(4) };
+                    
+                    document.getElementById(`sound${sensorId}_raw`).textContent = `Amplitude: ${rawValue.toFixed(2)}`;
+                    document.getElementById(`sound${sensorId}_dist`).textContent = `Distance: ${convertedDistance.toFixed(2)}m`;
+                    
+                    const element = document.getElementById(`sound${sensorId}`);
+                    element.classList.add('active');
+                    setTimeout(() => element.classList.remove('active'), 1000);
+                }
+                
+                this.addMqttLog(this.currentMode, `📤 PUBLISH ${topic}: ${JSON.stringify(payload)}`);
+            }
+
+            performTrilateration(distances) {
+                const A = this.sensorPositions['A'], B = this.sensorPositions['B'], C = this.sensorPositions['C'];
+                const rA = distances['A'], rB = distances['B'], rC = distances['C'];
+                
+                const x1 = A[0], y1 = A[1], x2 = B[0], y2 = B[1], x3 = C[0], y3 = C[1];
+                
+                const A_calc = 2 * (x2 - x1);
+                const B_calc = 2 * (y2 - y1);
+                const C_calc = rA*rA - rB*rB - x1*x1 + x2*x2 - y1*y1 + y2*y2;
+                const D_calc = 2 * (x3 - x2);
+                const E_calc = 2 * (y3 - y2);
+                const F_calc = rB*rB - rC*rC - x2*x2 + x3*x3 - y2*y2 + y3*y3;
+                
+                const denominator = A_calc * E_calc - B_calc * D_calc;
+                
+                if (Math.abs(denominator) > 1e-10) {
+                    const x = (C_calc * E_calc - F_calc * B_calc) / denominator;
+                    const y = (A_calc * F_calc - D_calc * C_calc) / denominator;
+                    const error = this.calculateDistance([x, y], this.currentPosition);
+                    
+                    document.getElementById('positionX').textContent = x.toFixed(2);
+                    document.getElementById('positionY').textContent = y.toFixed(2);
+                    document.getElementById('precision').textContent = `±${error.toFixed(2)}m`;
+                    
+                    this.addTrilaterationLog(`🎯 Position calculée: (${x.toFixed(2)}, ${y.toFixed(2)})`);
+                    this.addTrilaterationLog(`📍 Position réelle: (${this.currentPosition[0].toFixed(2)}, ${this.currentPosition[1].toFixed(2)})`);
+                    this.addTrilaterationLog(`⚠️ Erreur: ${error.toFixed(2)}m`);
+                    this.addTrilaterationLog(`💾 Sauvegarde en base de données...`);
+                } else {
+                    this.addTrilaterationLog(`❌ Erreur: Calcul impossible (capteurs colinéaires)`);
+                }
+            }
+
+            addMqttLog(type, message) {
+                const logContainer = document.getElementById(`${type}MqttLog`);
+                const logEntry = document.createElement('div');
+                logEntry.className = `log-entry ${type}`;
+                logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                logContainer.appendChild(logEntry);
+                logContainer.scrollTop = logContainer.scrollHeight;
+                if (logContainer.children.length > 20) logContainer.removeChild(logContainer.firstChild);
+            }
+
+            addTrilaterationLog(message) {
+                const logContainer = document.getElementById('trilaterationLog');
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry trilateration';
+                logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+                logContainer.appendChild(logEntry);
+                logContainer.scrollTop = logContainer.scrollHeight;
+                if (logContainer.children.length > 15) logContainer.removeChild(logContainer.firstChild);
+            }
+
+            clearAllData() {
+                this.sensors.forEach(id => {
+                    document.getElementById(`ultrason${id}_raw`).textContent = 'Temps: ---';
+                    document.getElementById(`ultrason${id}_dist`).textContent = 'Distance: ---';
+                    document.getElementById(`sound${id}_raw`).textContent = 'Amplitude: ---';
+                    document.getElementById(`sound${id}_dist`).textContent = 'Distance: ---';
+                });
+                document.getElementById('positionX').textContent = '---.--';
+                document.getElementById('positionY').textContent = '---.--';
+                document.getElementById('precision').textContent = '---.--';
+            }
+
+            updateStatus(text) {
+                document.getElementById('statusText').textContent = text;
+            }
+        }
+
+        const monitor = new SensorMonitor();
+        setTimeout(() => {
+            monitor.addTrilaterationLog('🚀 Système de monitoring initialisé');
+            monitor.addTrilaterationLog('📊 Prêt à recevoir des données de capteurs');
+        }, 500);
+    </script>
+</body>
+</html>

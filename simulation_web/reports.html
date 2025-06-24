@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAÉ24 - Générateur de Rapports</title>
+    <style>
+        /* CSS FROM styles.css - ADAPTED FOR THIS PAGE */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: #f8f9fa;
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        main.container {
+            margin-top: 100px; /* Space for fixed nav */
+            margin-bottom: 40px;
+        }
+
+        nav {
+            background: #2c3e50;
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        
+        .nav-link.active,
+        .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+            transform: translateY(-1px);
+        }
+
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .mobile-menu-toggle span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 3px 0;
+            transition: 0.3s;
+            border-radius: 2px;
+        }
+        
+        .logo {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .page-header p {
+            font-size: 1.1rem;
+            color: #5a6c7d;
+        }
+
+        /* Styles for report builder elements */
+        .report-builder, .preview-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #3498db; /* Using a color from the new theme */
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .form-section h3 {
+             color: #2c3e50;
+        }
+
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background: white;
+            color: #2c3e50;
+            font-size: 1rem;
+            font-family: 'Arial', sans-serif; /* Use a more standard font for inputs */
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .checkbox-item { display: flex; align-items: center; gap: 8px; }
+        .checkbox-item input[type="checkbox"] { width: auto; }
+
+        .report-preview {
+            border: 2px dashed #ccc; padding: 20px;
+            min-height: 400px; background: white; border-radius: 10px;
+        }
+
+        /* Buttons from Original File, Styled for New Theme */
+        .btn-group { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; }
+        .btn {
+            background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+            color: white; border: none; padding: 15px 30px; border-radius: 25px;
+            cursor: pointer; font-size: 1rem; transition: all 0.3s ease;
+            display: flex; align-items: center; gap: 10px; font-family: 'Georgia', serif;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(66, 165, 245, 0.4);
+        }
+        .btn-success { background: linear-gradient(135deg, #4caf50 0%, #388e3c 100%); }
+        .btn-warning { background: linear-gradient(135deg, #ff9800 0%, #f57c00 100%); }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%; max-width: 600px; margin: 30px auto 0;
+            height: 8px; background: #e9ecef; border-radius: 4px; overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%; background: linear-gradient(90deg, #4caf50, #8bc34a);
+            border-radius: 4px; width: 0%; transition: width 0.3s ease;
+        }
+        
+        /* Template Cards */
+        .template-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px; margin: 20px 0;
+        }
+        .template-card {
+            background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+            border-radius: 15px; padding: 20px; text-align: center;
+            cursor: pointer; transition: all 0.3s ease; border: 2px solid transparent;
+        }
+        .template-card:hover { border-color: #3498db; transform: translateY(-5px); }
+        .template-card.selected { border-color: #4caf50; background: #e8f5e9; }
+        .template-icon { font-size: 2rem; margin-bottom: 10px; }
+        .template-card h4 { color: #2c3e50; }
+        .template-card p { color: #5a6c7d; font-size: 0.9rem; }
+
+        /* Status Panel */
+        .status-panel {
+            background: white; border-radius: 15px; padding: 20px; margin: 0;
+            border: 1px solid #e9ecef;
+        }
+        .status-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid #e9ecef;
+        }
+        .status-item:last-child { border-bottom: none; }
+        .status-indicator { width: 12px; height: 12px; border-radius: 50%; background: #e74c3c; }
+        .status-indicator.success { background: #27ae60; }
+        .status-indicator.warning { background: #f39c12; }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column; gap: 10px; position: absolute;
+                top: 100%; left: 0; right: 0; background: #2c3e50;
+                padding: 20px; display: none; z-index: 1000;
+                border-top: 1px solid rgba(255,255,255,0.1);
+            }
+            .nav-links.active { display: flex; }
+            .mobile-menu-toggle { display: flex; }
+            .nav-container { position: relative; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-container container">
+            <div class="logo">SAÉ24 Rapports</div>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link">🏠 Accueil</a>
+                <a href="monitoring.html" class="nav-link">📊 Monitoring</a>
+                <a href="heatmap.html" class="nav-link">🔥 Heatmap</a>
+                <a href="trajectory.html" class="nav-link">🎯 Trajectoires</a>
+                <a href="comparison.html" class="nav-link">⚖️ Comparaison</a>
+                <a href="#" class="nav-link active">📊 Rapports</a>
+                <a href="admin.html" class="nav-link">⚙️ Admin</a>
+            </div>
+            <div class="mobile-menu-toggle" id="mobileMenuToggle">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="page-header">
+            <h1>📊 Générateur de Rapports SAÉ24</h1>
+            <p>Créez des rapports professionnels automatisés de votre projet IoT</p>
+        </div>
+
+        <!-- Configuration du Rapport -->
+        <div class="report-builder">
+            <h2 class="section-title">⚙️ Configuration du Rapport</h2>
+            
+            <div class="form-grid">
+                <div class="form-section">
+                    <h3>📋 Informations Générales</h3>
+                    <div class="form-group">
+                        <label>Titre du Rapport :</label>
+                        <input type="text" id="reportTitle" value="Rapport d'Analyse SAÉ24 - Capteurs IoT" placeholder="Titre du rapport">
+                    </div>
+                    <div class="form-group">
+                        <label>Auteur(s) :</label>
+                        <input type="text" id="reportAuthor" placeholder="Nom des auteurs">
+                    </div>
+                    <div class="form-group">
+                        <label>Période d'analyse :</label>
+                        <select id="reportPeriod">
+                            <option value="last24h">Dernières 24 heures</option>
+                            <option value="last7days">7 derniers jours</option>
+                            <option value="last30days">30 derniers jours</option>
+                            <option value="custom">Période personnalisée</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Résumé exécutif :</label>
+                        <textarea id="reportSummary" rows="3" placeholder="Résumé du projet et objectifs..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>📊 Sections à Inclure</h3>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="section_overview" checked>
+                            <label for="section_overview">Vue d'ensemble</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="section_performance" checked>
+                            <label for="section_performance">Performances</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="section_comparison" checked>
+                            <label for="section_comparison">Comparaison Ultrason/Son</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="section_trajectories" checked>
+                            <label for="section_trajectories">Analyse Trajectoires</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="section_heatmap" checked>
+                            <label for="section_heatmap">Heatmap Couverture</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="section_technical">
+                            <label for="section_technical">Détails Techniques</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="section_recommendations" checked>
+                            <label for="section_recommendations">Recommandations</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="section_appendix">
+                            <label for="section_appendix">Annexes</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="section-title">🎨 Modèles de Rapport</h3>
+            <div class="template-grid">
+                <div class="template-card selected" data-template="executive">
+                    <div class="template-icon">👔</div>
+                    <h4>Rapport Exécutif</h4>
+                    <p>Pour les dirigeants et décideurs</p>
+                </div>
+                <div class="template-card" data-template="technical">
+                    <div class="template-icon">🔧</div>
+                    <h4>Rapport Technique</h4>
+                    <p>Détails techniques complets</p>
+                </div>
+                <div class="template-card" data-template="research">
+                    <div class="template-icon">🔬</div>
+                    <h4>Rapport de Recherche</h4>
+                    <p>Style académique et scientifique</p>
+                </div>
+                <div class="template-card" data-template="presentation">
+                    <div class="template-icon">📽️</div>
+                    <h4>Support Présentation</h4>
+                    <p>Format optimisé pour présentation</p>
+                </div>
+            </div>
+
+            <h3 class="section-title">📡 Statut de Collecte des Données</h3>
+            <div class="status-panel">
+                <div class="status-item">
+                    <span>Base de Données</span>
+                    <div class="status-indicator success" id="statusDB"></div>
+                </div>
+                <div class="status-item">
+                    <span>Données Ultrason</span>
+                    <div class="status-indicator success" id="statusUltrason"></div>
+                </div>
+                <div class="status-item">
+                    <span>Données Son</span>
+                    <div class="status-indicator warning" id="statusSound"></div>
+                </div>
+                <div class="status-item">
+                    <span>Calculs de Performance</span>
+                    <div class="status-indicator success" id="statusPerformance"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="preview-section">
+            <h2 class="section-title">👁️ Prévisualisation du Rapport</h2>
+            <div class="report-preview" id="reportPreview">
+                <div style="text-align: center; color: #666; padding: 40px;">
+                    <h3>Cliquez sur "Générer Prévisualisation" pour voir un aperçu du rapport</h3>
+                </div>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn" id="previewBtn">👁️ Générer Prévisualisation</button>
+            <button class="btn btn-success" id="generatePDFBtn">📄 Générer PDF</button>
+            <button class="btn btn-warning" id="generateHTMLBtn">🌐 Exporter HTML</button>
+            <button class="btn" id="scheduleBtn">⏰ Programmer Génération</button>
+        </div>
+
+        <div class="progress-bar" id="progressBar" style="display: none;">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+    </main>
+
+    <script>
+        class ReportGenerator {
+            constructor() {
+                this.selectedTemplate = 'executive';
+                this.reportData = {};
+                this.realSystemData = null;
+                
+                this.initEventListeners();
+                this.loadRealSystemData();
+            }
+
+            initEventListeners() {
+                // Mobile Menu Toggle
+                const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+                const navLinks = document.getElementById('navLinks');
+                if (mobileMenuToggle && navLinks) {
+                    mobileMenuToggle.addEventListener('click', () => {
+                        navLinks.classList.toggle('active');
+                    });
+                }
+                
+                // Sélection de template
+                document.querySelectorAll('.template-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
+                        card.classList.add('selected');
+                        this.selectedTemplate = card.dataset.template;
+                    });
+                });
+
+                // Boutons d'action
+                document.getElementById('previewBtn').addEventListener('click', () => this.generatePreview());
+                document.getElementById('generatePDFBtn').addEventListener('click', () => this.generatePDF());
+                document.getElementById('generateHTMLBtn').addEventListener('click', () => this.generateHTML());
+                document.getElementById('scheduleBtn').addEventListener('click', () => this.scheduleReport());
+            }
+
+            async loadRealSystemData() {
+                this.showProgress();
+                this.updateProgress(10);
+                
+                try {
+                    const response = await fetch('api_get_positions.php?type=all');
+                    if (!response.ok) throw new Error('API non accessible');
+                    
+                    const data = await response.json();
+                    this.updateProgress(50);
+                    
+                    if (data.error) throw new Error(data.error);
+                    
+                    this.realSystemData = data;
+                    const ultrasonData = data.ultrason || [];
+                    const soundData = data.son || [];
+                    
+                    this.updateProgress(80);
+                    
+                    const avgAccuracy = this.calculateRealAccuracy(ultrasonData, soundData);
+                    const coverageAnalysis = this.analyzeCoverage(ultrasonData, soundData);
+                    const performanceMetrics = this.calculatePerformanceMetrics(ultrasonData, soundData);
+                    
+                    this.reportData = {
+                        overview: {
+                            totalMeasurements: ultrasonData.length + soundData.length,
+                            ultrasonMeasurements: ultrasonData.length,
+                            soundMeasurements: soundData.length,
+                            systemUptime: this.calculateUptime(),
+                            averageAccuracy: avgAccuracy
+                        },
+                        performance: {
+                            ultrasonAccuracy: performanceMetrics.ultrasonAccuracy,
+                            soundAccuracy: performanceMetrics.soundAccuracy,
+                            responseTime: performanceMetrics.responseTime,
+                            dataLoss: performanceMetrics.dataLoss
+                        },
+                        trajectories: {
+                            totalDistance: coverageAnalysis.totalDistance,
+                            averageSpeed: coverageAnalysis.averageSpeed,
+                            coverageArea: coverageAnalysis.coverageArea
+                        },
+                        issues: this.identifyIssues(ultrasonData, soundData),
+                        recommendations: this.generateRecommendations(ultrasonData, soundData)
+                    };
+                    
+                    this.updateProgress(100);
+                    this.updateSystemStatus();
+                    
+                } catch (error) {
+                    console.error('Erreur lors du chargement des données:', error);
+                    this.loadFallbackData();
+                    this.updateSystemStatus(false);
+                } finally {
+                    setTimeout(() => this.hideProgress(), 500);
+                }
+            }
+
+            calculateRealAccuracy(ultrasonData, soundData) {
+                const allData = [...ultrasonData, ...soundData];
+                if (allData.length === 0) return 0;
+                let totalAccuracy = 0;
+                let validPoints = 0;
+                allData.forEach(point => {
+                    const accuracy = this.calculatePointAccuracy(point);
+                    if (!isNaN(accuracy)) { totalAccuracy += accuracy; validPoints++; }
+                });
+                return validPoints > 0 ? totalAccuracy / validPoints : 0;
+            }
+
+            calculatePointAccuracy(point) {
+                const x = parseFloat(point.pos_x_estimee);
+                const y = parseFloat(point.pos_y_estimee);
+                const distA = parseFloat(point.dist_a);
+                const distB = parseFloat(point.dist_b);
+                const distC = parseFloat(point.dist_c);
+                if (isNaN(x) || isNaN(y) || isNaN(distA) || isNaN(distB) || isNaN(distC)) return NaN;
+                const sensors = { 'A': [0.25, 0.25], 'B': [0.25, 7.75], 'C': [7.75, 7.75] };
+                const theoreticalA = Math.hypot(x - sensors.A[0], y - sensors.A[1]);
+                const theoreticalB = Math.hypot(x - sensors.B[0], y - sensors.B[1]);
+                const theoreticalC = Math.hypot(x - sensors.C[0], y - sensors.C[1]);
+                const errorA = Math.abs(distA - theoreticalA) / Math.max(theoreticalA, 0.1);
+                const errorB = Math.abs(distB - theoreticalB) / Math.max(theoreticalB, 0.1);
+                const errorC = Math.abs(distC - theoreticalC) / Math.max(theoreticalC, 0.1);
+                const avgError = (errorA + errorB + errorC) / 3;
+                return Math.max(0, Math.min(100, (1 - avgError) * 100));
+            }
+
+            analyzeCoverage(ultrasonData, soundData) {
+                const allData = [...ultrasonData, ...soundData];
+                if (allData.length < 2) return { totalDistance: 0, averageSpeed: 0, coverageArea: 0 };
+                let totalDistance = 0;
+                for (let i = 1; i < allData.length; i++) {
+                    const [x1, y1] = [parseFloat(allData[i - 1].pos_x_estimee), parseFloat(allData[i - 1].pos_y_estimee)];
+                    const [x2, y2] = [parseFloat(allData[i].pos_x_estimee), parseFloat(allData[i].pos_y_estimee)];
+                    if (![x1, y1, x2, y2].some(isNaN)) {
+                        const distance = Math.hypot(x2 - x1, y2 - y1);
+                        if (distance < 2) totalDistance += distance;
+                    }
+                }
+                const positions = allData.map(point => ({ x: parseFloat(point.pos_x_estimee), y: parseFloat(point.pos_y_estimee) })).filter(pos => !isNaN(pos.x));
+                const coverageArea = this.calculateCoverageArea(positions);
+                const timeSpan = allData.length * 2;
+                const averageSpeed = timeSpan > 0 ? totalDistance / timeSpan : 0;
+                return { totalDistance, averageSpeed, coverageArea };
+            }
+
+            calculateCoverageArea(positions) {
+                if (positions.length < 3) return 0;
+                const minX = Math.min(...positions.map(p => p.x));
+                const maxX = Math.max(...positions.map(p => p.x));
+                const minY = Math.min(...positions.map(p => p.y));
+                const maxY = Math.max(...positions.map(p => p.y));
+                return (maxX - minX) * (maxY - minY);
+            }
+
+            calculatePerformanceMetrics(ultrasonData, soundData) {
+                const ultrasonAccuracy = ultrasonData.length > 0 ? this.calculateRealAccuracy(ultrasonData, []) : 0;
+                const soundAccuracy = soundData.length > 0 ? this.calculateRealAccuracy([], soundData) : 0;
+                return {
+                    ultrasonAccuracy, soundAccuracy,
+                    responseTime: 15 + Math.random() * 20, // Simulé
+                    dataLoss: Math.max(0, (1 - (ultrasonData.length + soundData.length) / 1000) * 100) // Simulé
+                };
+            }
+
+            identifyIssues(ultrasonData, soundData) {
+                const issues = [];
+                if (ultrasonData.length === 0) issues.push('Aucune donnée ultrason reçue');
+                if (soundData.length === 0) issues.push('Aucune donnée son reçue');
+                const avgAccuracy = this.calculateRealAccuracy(ultrasonData, soundData);
+                if (avgAccuracy < 80) issues.push(`Précision moyenne faible: ${avgAccuracy.toFixed(1)}%`);
+                const allData = [...ultrasonData, ...soundData].sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
+                if (allData.length > 10) {
+                    const recentData = allData.slice(-10);
+                    const oldData = allData.slice(0, 10);
+                    const recentAccuracy = this.calculateRealAccuracy(recentData.filter(d => d.source_type === 'ultrason'), recentData.filter(d => d.source_type === 'son'));
+                    const oldAccuracy = this.calculateRealAccuracy(oldData.filter(d => d.source_type === 'ultrason'), oldData.filter(d => d.source_type === 'son'));
+                    if (recentAccuracy < oldAccuracy - 10) issues.push('Dégradation de la précision détectée');
+                }
+                return issues;
+            }
+
+            generateRecommendations(ultrasonData, soundData) {
+                const recommendations = [];
+                const totalData = ultrasonData.length + soundData.length;
+                if (totalData < 50) recommendations.push('Augmenter la fréquence de collecte des données');
+                if (ultrasonData.length === 0) recommendations.push('Vérifier la configuration des capteurs ultrason');
+                else if (soundData.length === 0) recommendations.push('Vérifier la configuration des capteurs son');
+                const ultrasonAccuracy = ultrasonData.length > 0 ? this.calculateRealAccuracy(ultrasonData, []) : 0;
+                const soundAccuracy = soundData.length > 0 ? this.calculateRealAccuracy([], soundData) : 0;
+                if (ultrasonAccuracy > soundAccuracy + 10) recommendations.push('Calibrer les capteurs son pour améliorer la précision');
+                else if (soundAccuracy > ultrasonAccuracy + 10) recommendations.push('Calibrer les capteurs ultrason pour améliorer la précision');
+                if (Math.abs(ultrasonAccuracy - soundAccuracy) < 5 && totalData > 100) recommendations.push("Optimiser l'algorithme de fusion des données multi-capteurs");
+                return recommendations;
+            }
+
+            calculateUptime() {
+                const hours = 24;
+                const minutes = 0;
+                return `${hours}h ${minutes}m`;
+            }
+
+            updateSystemStatus(success = true) {
+                const setStatus = (id, isSuccess) => {
+                    const indicator = document.getElementById(id);
+                    if (indicator) {
+                        indicator.className = 'status-indicator';
+                        if (isSuccess) indicator.classList.add('success');
+                        else indicator.classList.add('warning');
+                    }
+                };
+                setStatus('statusDB', success);
+                setStatus('statusUltrason', success && (this.reportData.overview?.ultrasonMeasurements > 0));
+                setStatus('statusSound', success && (this.reportData.overview?.soundMeasurements > 0));
+                setStatus('statusPerformance', success && (this.reportData.overview?.averageAccuracy > 70));
+            }
+
+            loadFallbackData() {
+                this.reportData = {
+                    overview: { totalMeasurements: 0, ultrasonMeasurements: 0, soundMeasurements: 0, systemUptime: '0h 0m', averageAccuracy: 0 },
+                    performance: { ultrasonAccuracy: 0, soundAccuracy: 0, responseTime: 0, dataLoss: 100 },
+                    trajectories: { totalDistance: 0, averageSpeed: 0, coverageArea: 0 },
+                    issues: ['Impossible de récupérer les données système'],
+                    recommendations: ['Vérifier la connectivité à la base de données', 'Redémarrer les services de collecte']
+                };
+            }
+
+            generatePreview() {
+                const preview = document.getElementById('reportPreview');
+                const title = document.getElementById('reportTitle').value;
+                const author = document.getElementById('reportAuthor').value;
+                const summary = document.getElementById('reportSummary').value;
+                const currentDate = new Date().toLocaleDateString('fr-FR');
+                let content = `<div style="text-align: center; margin-bottom: 30px;"><h1 style="color: #2c3e50; margin-bottom: 10px;">${title}</h1><p style="font-size: 1.1rem; color: #666;">Par ${author || 'Équipe SAÉ24'}</p><p style="color: #888;">Généré le ${currentDate}</p></div>`;
+                if (summary) content += `<div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin-bottom: 30px;"><h3 style="color: #2c3e50; margin-bottom: 15px;">Résumé Exécutif</h3><p style="line-height: 1.6; color: #555;">${summary}</p></div>`;
+                if (document.getElementById('section_overview').checked) content += this.generateOverviewSection();
+                if (document.getElementById('section_performance').checked) content += this.generatePerformanceSection();
+                if (document.getElementById('section_comparison').checked) content += this.generateComparisonSection();
+                if (document.getElementById('section_recommendations').checked) content += this.generateRecommendationsSection();
+                preview.innerHTML = content;
+            }
+
+            generateOverviewSection() {
+                const data = this.reportData.overview;
+                return `<div style="margin-bottom: 30px;"><h3 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 20px;">📊 Vue d'Ensemble</h3><div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;"><div style="background: #e3f2fd; padding: 15px; border-radius: 8px; text-align: center;"><h4 style="color: #1976d2; margin-bottom: 5px;">${data.totalMeasurements}</h4><p style="color: #666; font-size: 0.9rem;">Mesures Totales</p></div><div style="background: #f3e5f5; padding: 15px; border-radius: 8px; text-align: center;"><h4 style="color: #7b1fa2; margin-bottom: 5px;">${data.averageAccuracy.toFixed(1)}%</h4><p style="color: #666; font-size: 0.9rem;">Précision Moyenne</p></div><div style="background: #e8f5e8; padding: 15px; border-radius: 8px; text-align: center;"><h4 style="color: #388e3c; margin-bottom: 5px;">${data.systemUptime}</h4><p style="color: #666; font-size: 0.9rem;">Temps de Fonctionnement</p></div></div></div>`;
+            }
+
+            generatePerformanceSection() {
+                const data = this.reportData.performance;
+                return `<div style="margin-bottom: 30px;"><h3 style="color: #2c3e50; border-bottom: 2px solid #27ae60; padding-bottom: 10px; margin-bottom: 20px;">⚡ Analyse des Performances</h3><div style="background: #f8f9fa; padding: 20px; border-radius: 10px;"><div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 20px;"><div><h4 style="color: #3498db; margin-bottom: 10px;">🔊 Capteurs Ultrason</h4><p>Précision : <strong>${data.ultrasonAccuracy.toFixed(1)}%</strong></p><p>Portée optimale : <strong>0.5m - 5m</strong></p></div><div><h4 style="color: #27ae60; margin-bottom: 10px;">🔉 Capteurs Son</h4><p>Précision : <strong>${data.soundAccuracy.toFixed(1)}%</strong></p><p>Portée optimale : <strong>1m - 4m</strong></p></div></div><p style="color: #666;"><strong>Temps de réponse moyen :</strong> ${data.responseTime.toFixed(0)}ms<br><strong>Taux de perte de données :</strong> ${data.dataLoss.toFixed(1)}%</p></div></div>`;
+            }
+
+            generateComparisonSection() {
+                return `<div style="margin-bottom: 30px;"><h3 style="color: #2c3e50; border-bottom: 2px solid #e74c3c; padding-bottom: 10px; margin-bottom: 20px;">⚖️ Comparaison Ultrason vs Son</h3><div style="background: #f8f9fa; padding: 20px; border-radius: 10px;"><table style="width: 100%; border-collapse: collapse;"><thead><tr style="background: #e9ecef;"><th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Critère</th><th style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #3498db;">Ultrason</th><th style="padding: 12px; text-align: center; border: 1px solid #ddd; color: #27ae60;">Son</th></tr></thead><tbody><tr><td style="padding: 10px; border: 1px solid #ddd;">Précision</td><td style="padding: 10px; border: 1px solid #ddd; text-align: center;">⭐⭐⭐⭐⭐</td><td style="padding: 10px; border: 1px solid #ddd; text-align: center;">⭐⭐⭐⭐</td></tr><tr><td style="padding: 10px; border: 1px solid #ddd;">Temps de réponse</td><td style="padding: 10px; border: 1px solid #ddd; text-align: center;">⭐⭐⭐⭐⭐</td><td style="padding: 10px; border: 1px solid #ddd; text-align: center;">⭐⭐⭐</td></tr><tr><td style="padding: 10px; border: 1px solid #ddd;">Portée</td><td style="padding: 10px; border: 1px solid #ddd; text-align: center;">⭐⭐⭐⭐⭐</td><td style="padding: 10px; border: 1px solid #ddd; text-align: center;">⭐⭐⭐</td></tr><tr><td style="padding: 10px; border: 1px solid #ddd;">Résistance au bruit</td><td style="padding: 10px; border: 1px solid #ddd; text-align: center;">⭐⭐⭐⭐</td><td style="padding: 10px; border: 1px solid #ddd; text-align: center;">⭐⭐</td></tr></tbody></table></div></div>`;
+            }
+
+            generateRecommendationsSection() {
+                const recommendations = this.reportData.recommendations;
+                return `<div style="margin-bottom: 30px;"><h3 style="color: #2c3e50; border-bottom: 2px solid #f39c12; padding-bottom: 10px; margin-bottom: 20px;">💡 Recommandations</h3><div style="background: #fff3cd; padding: 20px; border-radius: 10px; border-left: 4px solid #f39c12;"><ul style="margin: 0; padding-left: 20px;">${recommendations.map(rec => `<li style="margin-bottom: 10px; color: #856404;">${rec}</li>`).join('')}</ul></div></div>`;
+            }
+
+            async generatePDF() {
+                this.showProgress();
+                for (let i = 0; i <= 100; i += 10) { this.updateProgress(i); await new Promise(r => setTimeout(r, 200)); }
+                this.hideProgress();
+                alert('Génération PDF simulée ! (Pour un vrai PDF, une librairie comme jsPDF serait utilisée)');
+            }
+
+            generateHTML() {
+                const content = document.getElementById('reportPreview').innerHTML;
+                const fullHTML = `<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Rapport SAÉ24</title><style>body {font-family:'Arial',sans-serif;margin:40px auto;max-width:800px;line-height:1.6;color:#333;}h1,h2,h3{color:#2c3e50;}table{border-collapse:collapse;width:100%;margin:20px 0;}th,td{border:1px solid #ddd;padding:12px;text-align:left;}th{background-color:#f8f9fa;font-weight:bold;}</style></head><body>${content}<footer style="margin-top:50px;padding-top:20px;border-top:1px solid #ddd;text-align:center;color:#666;"><p>Rapport généré automatiquement par le système SAÉ24 - ${new Date().toLocaleString('fr-FR')}</p></footer></body></html>`;
+                const blob = new Blob([fullHTML], { type: 'text/html' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `rapport_sae24_${new Date().toISOString().split('T')[0]}.html`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+
+            scheduleReport() {
+                const time = prompt('À quelle heure souhaitez-vous programmer la génération ? (format HH:MM)', '09:00');
+                if (time) alert(`Rapport programmé pour ${time} tous les jours.\n\nNote: Dans une vraie application, ceci serait géré par un service backend.`);
+            }
+
+            showProgress() { document.getElementById('progressBar').style.display = 'block'; }
+            hideProgress() { document.getElementById('progressBar').style.display = 'none'; }
+            updateProgress(percentage) { document.getElementById('progressFill').style.width = percentage + '%'; }
+        }
+
+        window.addEventListener('load', () => new ReportGenerator());
+    </script>
+</body>
+</html>

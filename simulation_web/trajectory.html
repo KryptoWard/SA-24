@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAÉ24 - Analyseur de Trajectoires</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <style>
+        .main-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 300px;
+            gap: 20px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .sidebar, .central-view {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+        }
+
+        .sidebar h3, .central-view h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 1.3rem;
+            text-align: center;
+        }
+
+        .trajectory-canvas {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            background: #f8f9fa;
+        }
+        
+        #trajectoryList {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        .trajectory-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid #e9ecef;
+        }
+
+        .trajectory-item:hover {
+            border-color: #3498db;
+            transform: translateX(5px);
+        }
+
+        .trajectory-item.selected {
+            background: #eaf5fc;
+            border-color: #3498db;
+            box-shadow: 0 4px 10px rgba(52, 152, 219, 0.2);
+        }
+        
+        .trajectory-name { font-weight: bold; color: #34495e; }
+        .trajectory-stats { font-size: 0.8rem; color: #7f8c8d; }
+
+        .controls { display: flex; justify-content: center; gap: 15px; margin: 20px 0; flex-wrap: wrap; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        
+        .speed-controls { display: flex; align-items: center; gap: 10px; margin: 15px 0; }
+        .speed-slider { -webkit-appearance: none; appearance: none; flex: 1; height: 6px; background: #dee2e6; border-radius: 3px; outline: none; cursor: pointer; }
+        .speed-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; background: #3498db; border-radius: 50%; cursor: pointer; }
+        .speed-slider::-moz-range-thumb { width: 18px; height: 18px; background: #3498db; border-radius: 50%; cursor: pointer; }
+
+        .progress-bar { width: 100%; height: 8px; background: #e9ecef; border-radius: 4px; margin: 15px 0; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #3498db, #2980b9); border-radius: 4px; transition: width 0.3s ease; }
+
+        .metric-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .metric-card { background: #f8f9fa; padding: 15px; border-radius: 10px; text-align: center; border: 1px solid #e9ecef; }
+        .metric-value { font-size: 1.8rem; font-weight: bold; color: #3498db; }
+        .metric-label { font-size: 0.9rem; color: #5a6c7d; }
+        
+        .analysis-section h4 { color: #2c3e50; margin-top: 20px; text-align: center; }
+        .analysis-section canvas { width: 100%; border-radius: 10px; margin: 10px 0; border: 1px solid #dee2e6; background-color: #fdfdfd;}
+
+        .timeline { background: #f8f9fa; padding: 15px; border-radius: 10px; margin-top: 15px; border: 1px solid #e9ecef; max-height: 200px; overflow-y: auto;}
+        .timeline-item { display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #dee2e6; color: #34495e;}
+        .timeline-item:last-child { border-bottom: none; }
+        .timeline-time { width: 80px; font-size: 0.8rem; opacity: 0.7; }
+        .timeline-event { flex: 1; font-size: 0.9rem; }
+        .timeline-coords { font-family: monospace; color: #3498db; }
+
+        @media (max-width: 1200px) {
+            .main-container { grid-template-columns: 1fr; }
+            #trajectoryList { max-height: 250px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container nav-container">
+            <div class="logo">SAÉ24 Simulation Avancée</div>
+            <div class.nav-links" id="navLinks">
+                <a href="index.html" class="nav-link">🏠 Accueil</a>
+                <a href="monitoring.html" class="nav-link">📊 Monitoring</a>
+                <a href="heatmap.html" class="nav-link">🔥 Heatmap</a>
+                <a href="#" class="nav-link" style="background: rgba(255,255,255,0.2);">🎯 Trajectoires</a>
+                <a href="comparison.html" class="nav-link">⚖️ Comparaison</a>
+                <a href="reports.html" class="nav-link">📊 Rapports</a>
+                <a href="admin.html" class="nav-link">⚙️ Admin</a>
+            </div>
+            <div class="mobile-menu-toggle" id="mobileMenuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="container" style="margin-top: 100px;">
+         <h2 class="section-title">🎯 Analyseur de Trajectoires</h2>
+         <p style="text-align: center; color: #5a6c7d; max-width: 800px; margin: -30px auto 40px auto;">
+            Rejouez et analysez les mouvements enregistrés par les capteurs. Chargez une trajectoire depuis la liste ou suivez les données en temps réel.
+        </p>
+    
+        <div class="main-container">
+            <aside class="sidebar">
+                <h3>📋 Trajectoires Enregistrées</h3>
+                <div id="trajectoryList">
+                    <p style="text-align:center; color:#7f8c8d;">Chargement...</p>
+                </div>
+                <button class="btn" id="loadTrajectoryBtn" style="width: 100%; margin-top: 15px;">🔄 Recharger Liste</button>
+                <button class="btn" id="loadLiveBtn" style="width: 100%; margin-top: 10px; background-color: #27ae60;">📡 Suivre en Direct</button>
+            </aside>
+
+            <div class="central-view">
+                <canvas class="trajectory-canvas" id="trajectoryCanvas"></canvas>
+                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                <div class="controls">
+                    <button class="btn" id="playBtn">▶️ Play</button>
+                    <button class="btn" id="pauseBtn" disabled>⏸️ Pause</button>
+                    <button class="btn" id="stopBtn" disabled>⏹️ Stop</button>
+                    <button class="btn" id="resetBtn">🔄 Reset</button>
+                </div>
+                <div class="speed-controls">
+                    <span>Vitesse:</span>
+                    <input type="range" class="speed-slider" id="speedSlider" min="0.1" max="5" step="0.1" value="1">
+                    <span id="speedDisplay" style="width: 40px;">1.0x</span>
+                </div>
+            </div>
+
+            <aside class="sidebar">
+                <h3>📊 Analyse de la Trajectoire</h3>
+                <div class="metric-grid">
+                    <div class="metric-card"><div class="metric-value" id="totalDistance">--</div><div class="metric-label">Distance (m)</div></div>
+                    <div class="metric-card"><div class="metric-value" id="avgSpeed">--</div><div class="metric-label">Vitesse (m/s)</div></div>
+                    <div class="metric-card"><div class="metric-value" id="duration">--</div><div class="metric-label">Durée (s)</div></div>
+                    <div class="metric-card"><div class="metric-value" id="accuracy">--</div><div class="metric-label">Précision (%)</div></div>
+                </div>
+                <div class="analysis-section">
+                    <h4>🎯 Zones Visitées</h4>
+                    <canvas id="heatmapCanvas"></canvas>
+                    <h4>📈 Vitesse dans le Temps</h4>
+                    <canvas id="speedChart"></canvas>
+                </div>
+                <div class="timeline">
+                    <h4>⏱️ Timeline</h4>
+                    <div id="timelineEvents"><p style="text-align:center; color:#7f8c8d;">En attente...</p></div>
+                </div>
+                 <button class="btn" id="exportBtn" style="width: 100%; margin-top: 20px; background-color: #8e44ad;">💾 Exporter Données</button>
+            </aside>
+        </div>
+    </main>
+
+    <script>
+        class TrajectoryAnalyzer {
+            constructor() {
+                this.canvas = document.getElementById('trajectoryCanvas');
+                this.ctx = this.canvas.getContext('2d');
+                this.heatmapCanvas = document.getElementById('heatmapCanvas');
+                this.heatmapCtx = this.heatmapCanvas.getContext('2d');
+                this.speedCanvas = document.getElementById('speedChart');
+                this.speedCtx = this.speedCanvas.getContext('2d');
+                
+                this.roomWidth = 8.0;
+                this.roomHeight = 8.0;
+                this.sensors = {
+                    'A': [0.25, 0.25],
+                    'B': [0.25, 7.75],
+                    'C': [7.75, 7.75]
+                };
+                
+                this.trajectories = [];
+                this.currentTrajectory = null;
+                this.isPlaying = false;
+                this.currentFrame = 0;
+                this.playSpeed = 1.0;
+                this.animationId = null;
+                this.liveMode = false;
+                this.liveUpdateInterval = null;
+                this.liveTrajectory = null;
+                
+                this.initCanvas();
+                this.initEventListeners();
+                this.loadSampleTrajectories();
+                this.drawRoom();
+            }
+
+            initCanvas() {
+                this.canvas.width = this.canvas.offsetWidth;
+                this.canvas.height = this.canvas.offsetHeight;
+            }
+
+            initEventListeners() {
+                document.getElementById('playBtn').addEventListener('click', () => this.play());
+                document.getElementById('pauseBtn').addEventListener('click', () => this.pause());
+                document.getElementById('stopBtn').addEventListener('click', () => this.stop());
+                document.getElementById('resetBtn').addEventListener('click', () => this.reset());
+                document.getElementById('exportBtn').addEventListener('click', () => this.exportTrajectory());
+                document.getElementById('loadTrajectoryBtn').addEventListener('click', () => this.loadSampleTrajectories());
+                document.getElementById('loadLiveBtn').addEventListener('click', () => this.toggleLiveMode());
+                
+                document.getElementById('speedSlider').addEventListener('input', (e) => {
+                    this.playSpeed = parseFloat(e.target.value);
+                    document.getElementById('speedDisplay').textContent = this.playSpeed.toFixed(1) + 'x';
+                });
+            }
+
+            loadSampleTrajectories() {
+                // Simulation de trajectoires diverses
+                this.trajectories = [
+                    {
+                        id: 1,
+                        name: "Trajet Circulaire",
+                        type: "ultrason",
+                        points: this.generateCircularPath(),
+                        duration: 30,
+                        color: "#42a5f5"
+                    },
+                    {
+                        id: 2,
+                        name: "Parcours Aléatoire",
+                        type: "son",
+                        points: this.generateRandomPath(),
+                        duration: 45,
+                        color: "#4caf50"
+                    },
+                    {
+                        id: 3,
+                        name: "Trajet Linéaire",
+                        type: "ultrason",
+                        points: this.generateLinearPath(),
+                        duration: 20,
+                        color: "#ff7043"
+                    },
+                    {
+                        id: 4,
+                        name: "Motif Zigzag",
+                        type: "son",
+                        points: this.generateZigzagPath(),
+                        duration: 35,
+                        color: "#ab47bc"
+                    }
+                ];
+                
+                this.displayTrajectoryList();
+            }
+
+            generateCircularPath() {
+                const points = [];
+                const centerX = 4, centerY = 4, radius = 2;
+                const steps = 50;
+                
+                for (let i = 0; i <= steps; i++) {
+                    const angle = (i / steps) * 2 * Math.PI;
+                    const x = centerX + radius * Math.cos(angle);
+                    const y = centerY + radius * Math.sin(angle);
+                    points.push({
+                        x: x,
+                        y: y,
+                        timestamp: new Date(Date.now() + i * 1000),
+                        accuracy: 95 + Math.random() * 5
+                    });
+                }
+                return points;
+            }
+
+            generateRandomPath() {
+                const points = [];
+                const steps = 60;
+                let x = 2 + Math.random() * 4;
+                let y = 2 + Math.random() * 4;
+                
+                for (let i = 0; i <= steps; i++) {
+                    x += (Math.random() - 0.5) * 0.5;
+                    y += (Math.random() - 0.5) * 0.5;
+                    x = Math.max(1, Math.min(7, x));
+                    y = Math.max(1, Math.min(7, y));
+                    
+                    points.push({
+                        x: x,
+                        y: y,
+                        timestamp: new Date(Date.now() + i * 1000),
+                        accuracy: 90 + Math.random() * 10
+                    });
+                }
+                return points;
+            }
+
+            generateLinearPath() {
+                const points = [];
+                const steps = 40;
+                const startX = 1, startY = 1;
+                const endX = 7, endY = 7;
+                
+                for (let i = 0; i <= steps; i++) {
+                    const progress = i / steps;
+                    const x = startX + (endX - startX) * progress;
+                    const y = startY + (endY - startY) * progress;
+                    
+                    points.push({
+                        x: x,
+                        y: y,
+                        timestamp: new Date(Date.now() + i * 1000),
+                        accuracy: 92 + Math.random() * 8
+                    });
+                }
+                return points;
+            }
+
+            generateZigzagPath() {
+                const points = [];
+                const steps = 50;
+                
+                for (let i = 0; i <= steps; i++) {
+                    const progress = i / steps;
+                    const x = 1 + progress * 6;
+                    const y = 4 + Math.sin(progress * Math.PI * 4) * 2;
+                    
+                    points.push({
+                        x: x,
+                        y: y,
+                        timestamp: new Date(Date.now() + i * 1000),
+                        accuracy: 88 + Math.random() * 12
+                    });
+                }
+                return points;
+            }
+
+            displayTrajectoryList() {
+                const container = document.getElementById('trajectoryList');
+                container.innerHTML = '';
+                
+                this.trajectories.forEach(trajectory => {
+                    const item = document.createElement('div');
+                    item.className = 'trajectory-item';
+                    item.innerHTML = `
+                        <div class="trajectory-info">
+                            <span class="trajectory-name">${trajectory.name}</span>
+                            <span style="color: ${trajectory.color};">●</span>
+                        </div>
+                        <div class="trajectory-stats">
+                            Type: ${trajectory.type} | ${trajectory.points.length} points
+                        </div>
+                        <div class="trajectory-stats">
+                            Durée: ${trajectory.duration}s
+                        </div>
+                    `;
+                    
+                    item.addEventListener('click', () => {
+                        this.selectTrajectory(trajectory);
+                        document.querySelectorAll('.trajectory-item').forEach(el => el.classList.remove('selected'));
+                        item.classList.add('selected');
+                    });
+                    
+                    container.appendChild(item);
+                });
+            }
+
+            selectTrajectory(trajectory) {
+                this.currentTrajectory = trajectory;
+                this.currentFrame = 0;
+                this.stop();
+                this.analyzeTrajectory();
+                this.drawTrajectory();
+                this.updateProgress();
+            }
+
+            play() {
+                if (!this.currentTrajectory) return;
+                
+                this.isPlaying = true;
+                document.getElementById('playBtn').disabled = true;
+                document.getElementById('pauseBtn').disabled = false;
+                document.getElementById('stopBtn').disabled = false;
+                
+                this.animate();
+            }
+
+            pause() {
+                this.isPlaying = false;
+                document.getElementById('playBtn').disabled = false;
+                document.getElementById('pauseBtn').disabled = true;
+                
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                }
+            }
+
+            stop() {
+                this.isPlaying = false;
+                this.currentFrame = 0;
+                
+                document.getElementById('playBtn').disabled = false;
+                document.getElementById('pauseBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = true;
+                
+                if (this.animationId) {
+                    cancelAnimationFrame(this.animationId);
+                }
+                
+                this.updateProgress();
+                this.drawTrajectory();
+            }
+
+            reset() {
+                this.stop();
+                if (this.currentTrajectory) {
+                    this.drawTrajectory();
+                }
+            }
+
+            animate() {
+                if (!this.isPlaying || !this.currentTrajectory) return;
+                
+                this.currentFrame += this.playSpeed;
+                
+                if (this.currentFrame >= this.currentTrajectory.points.length - 1) {
+                    this.stop();
+                    return;
+                }
+                
+                this.drawTrajectory();
+                this.updateProgress();
+                this.updateTimeline();
+                
+                this.animationId = requestAnimationFrame(() => {
+                    setTimeout(() => this.animate(), 50); // 20 FPS
+                });
+            }
+
+            drawRoom() {
+                this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Fond de la pièce
+                this.ctx.fillStyle = 'rgba(255,255,255,0.05)';
+                this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+                
+                // Grille
+                this.ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                this.ctx.lineWidth = 1;
+                for (let i = 0; i <= 8; i++) {
+                    const x = (i / 8) * this.canvas.width;
+                    const y = (i / 8) * this.canvas.height;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(x, 0);
+                    this.ctx.lineTo(x, this.canvas.height);
+                    this.ctx.moveTo(0, y);
+                    this.ctx.lineTo(this.canvas.width, y);
+                    this.ctx.stroke();
+                }
+                
+                // Capteurs
+                const sensorColors = { 'A': '#00FFFF', 'B': '#FF00FF', 'C': '#FFFF00' };
+                Object.entries(this.sensors).forEach(([name, pos]) => {
+                    const x = (pos[0] / this.roomWidth) * this.canvas.width;
+                    const y = (pos[1] / this.roomHeight) * this.canvas.height;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, 12, 0, 2 * Math.PI);
+                    this.ctx.fillStyle = sensorColors[name];
+                    this.ctx.fill();
+                    this.ctx.strokeStyle = '#fff';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.stroke();
+                    
+                    this.ctx.fillStyle = '#000';
+                    this.ctx.font = 'bold 14px Arial';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.fillText(name, x, y + 5);
+                });
+            }
+
+            drawTrajectory() {
+                if (!this.currentTrajectory) return;
+                
+                this.drawRoom();
+                
+                const points = this.currentTrajectory.points;
+                const currentIndex = Math.floor(this.currentFrame);
+                
+                // Dessiner le chemin complet (atténué)
+                if (points.length > 1) {
+                    this.ctx.strokeStyle = this.currentTrajectory.color + '40';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.beginPath();
+                    
+                    points.forEach((point, index) => {
+                        const x = (point.x / this.roomWidth) * this.canvas.width;
+                        const y = (point.y / this.roomHeight) * this.canvas.height;
+                        
+                        if (index === 0) {
+                            this.ctx.moveTo(x, y);
+                        } else {
+                            this.ctx.lineTo(x, y);
+                        }
+                    });
+                    
+                    this.ctx.stroke();
+                }
+                
+                // Dessiner le chemin parcouru (en couleur)
+                if (currentIndex > 0) {
+                    this.ctx.strokeStyle = this.currentTrajectory.color;
+                    this.ctx.lineWidth = 3;
+                    this.ctx.beginPath();
+                    
+                    for (let i = 0; i <= currentIndex && i < points.length; i++) {
+                        const point = points[i];
+                        const x = (point.x / this.roomWidth) * this.canvas.width;
+                        const y = (point.y / this.roomHeight) * this.canvas.height;
+                        
+                        if (i === 0) {
+                            this.ctx.moveTo(x, y);
+                        } else {
+                            this.ctx.lineTo(x, y);
+                        }
+                    }
+                    
+                    this.ctx.stroke();
+                }
+                
+                // Dessiner les points visités
+                points.slice(0, currentIndex + 1).forEach((point, index) => {
+                    const x = (point.x / this.roomWidth) * this.canvas.width;
+                    const y = (point.y / this.roomHeight) * this.canvas.height;
+                    const opacity = Math.max(0.2, (index + 1) / (currentIndex + 1));
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, 4, 0, 2 * Math.PI);
+                    this.ctx.fillStyle = this.currentTrajectory.color + Math.floor(opacity * 255).toString(16).padStart(2, '0');
+                    this.ctx.fill();
+                });
+                
+                // Position actuelle
+                if (currentIndex < points.length) {
+                    const currentPoint = points[currentIndex];
+                    const x = (currentPoint.x / this.roomWidth) * this.canvas.width;
+                    const y = (currentPoint.y / this.roomHeight) * this.canvas.height;
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(x, y, 8, 0, 2 * Math.PI);
+                    this.ctx.fillStyle = '#fff';
+                    this.ctx.fill();
+                    this.ctx.strokeStyle = this.currentTrajectory.color;
+                    this.ctx.lineWidth = 3;
+                    this.ctx.stroke();
+                }
+            }
+
+            analyzeTrajectory() {
+                if (!this.currentTrajectory) return;
+                
+                const points = this.currentTrajectory.points;
+                
+                // Calcul de la distance totale
+                let totalDistance = 0;
+                for (let i = 1; i < points.length; i++) {
+                    const prev = points[i - 1];
+                    const curr = points[i];
+                    totalDistance += Math.sqrt(Math.pow(curr.x - prev.x, 2) + Math.pow(curr.y - prev.y, 2));
+                }
+                
+                // Vitesse moyenne
+                const avgSpeed = totalDistance / this.currentTrajectory.duration;
+                
+                // Précision moyenne
+                const avgAccuracy = points.reduce((sum, p) => sum + p.accuracy, 0) / points.length;
+                
+                // Mise à jour de l'affichage
+                document.getElementById('totalDistance').textContent = totalDistance.toFixed(1);
+                document.getElementById('avgSpeed').textContent = avgSpeed.toFixed(2);
+                document.getElementById('duration').textContent = this.currentTrajectory.duration;
+                document.getElementById('accuracy').textContent = avgAccuracy.toFixed(1);
+                
+                this.drawHeatmap();
+                this.drawSpeedChart();
+                this.updateTimeline();
+            }
+
+            drawHeatmap() {
+                // Heatmap simplifiée des zones visitées
+                const ctx = this.heatmapCtx;
+                const width = this.heatmapCanvas.width;
+                const height = this.heatmapCanvas.height;
+                
+                ctx.clearRect(0, 0, width, height);
+                
+                if (!this.currentTrajectory) return;
+                
+                // Grille de densité
+                const gridSize = 20;
+                const grid = Array(gridSize).fill().map(() => Array(gridSize).fill(0));
+                
+                this.currentTrajectory.points.forEach(point => {
+                    const gridX = Math.floor((point.x / this.roomWidth) * gridSize);
+                    const gridY = Math.floor((point.y / this.roomHeight) * gridSize);
+                    if (gridX >= 0 && gridX < gridSize && gridY >= 0 && gridY < gridSize) {
+                        grid[gridY][gridX]++;
+                    }
+                });
+                
+                // Trouver max pour normalisation
+                const maxCount = Math.max(...grid.flat());
+                
+                // Dessiner la heatmap
+                const cellWidth = width / gridSize;
+                const cellHeight = height / gridSize;
+                
+                for (let y = 0; y < gridSize; y++) {
+                    for (let x = 0; x < gridSize; x++) {
+                        const intensity = grid[y][x] / maxCount;
+                        if (intensity > 0) {
+                            const alpha = Math.floor(intensity * 255).toString(16).padStart(2, '0');
+                            ctx.fillStyle = this.currentTrajectory.color + alpha;
+                            ctx.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+                        }
+                    }
+                }
+            }
+
+            drawSpeedChart() {
+                // Graphique de vitesse simplifié
+                const ctx = this.speedCtx;
+                const width = this.speedCanvas.width;
+                const height = this.speedCanvas.height;
+                
+                ctx.clearRect(0, 0, width, height);
+                
+                if (!this.currentTrajectory || this.currentTrajectory.points.length < 2) return;
+                
+                // Calculer les vitesses
+                const speeds = [];
+                const points = this.currentTrajectory.points;
+                
+                for (let i = 1; i < points.length; i++) {
+                    const prev = points[i - 1];
+                    const curr = points[i];
+                    const distance = Math.sqrt(Math.pow(curr.x - prev.x, 2) + Math.pow(curr.y - prev.y, 2));
+                    const speed = distance * 1000; // Conversion approximative
+                    speeds.push(speed);
+                }
+                
+                const maxSpeed = Math.max(...speeds);
+                
+                // Dessiner le graphique
+                ctx.strokeStyle = this.currentTrajectory.color;
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                
+                speeds.forEach((speed, index) => {
+                    const x = (index / (speeds.length - 1)) * width;
+                    const y = height - (speed / maxSpeed) * height;
+                    
+                    if (index === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                });
+                
+                ctx.stroke();
+            }
+
+            updateProgress() {
+                if (!this.currentTrajectory) return;
+                
+                const progress = (this.currentFrame / (this.currentTrajectory.points.length - 1)) * 100;
+                document.getElementById('progressFill').style.width = progress + '%';
+            }
+
+            updateTimeline() {
+                const container = document.getElementById('timelineEvents');
+                container.innerHTML = '';
+                
+                if (!this.currentTrajectory) return;
+                
+                const currentIndex = Math.floor(this.currentFrame);
+                const recentEvents = this.currentTrajectory.points
+                    .slice(Math.max(0, currentIndex - 3), currentIndex + 1)
+                    .reverse();
+                
+                recentEvents.forEach((point, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'timeline-item';
+                    const time = new Date(point.timestamp).toLocaleTimeString();
+                    
+                    item.innerHTML = `
+                        <div class="timeline-time">${time}</div>
+                        <div class="timeline-event">
+                            Position: <span class="timeline-coords">(${point.x.toFixed(1)}, ${point.y.toFixed(1)})</span>
+                        </div>
+                    `;
+                    
+                    if (index === 0) {
+                        item.style.background = 'rgba(100, 181, 246, 0.2)';
+                    }
+                    
+                    container.appendChild(item);
+                });
+            }
+
+            exportTrajectory() {
+                if (!this.currentTrajectory) return;
+                
+                const data = {
+                    name: this.currentTrajectory.name,
+                    type: this.currentTrajectory.type,
+                    points: this.currentTrajectory.points,
+                    metadata: {
+                        exported: new Date().toISOString(),
+                        duration: this.currentTrajectory.duration,
+                        pointCount: this.currentTrajectory.points.length
+                    }
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `trajectory_${this.currentTrajectory.name.replace(/\s+/g, '_')}.json`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
+
+            toggleLiveMode() {
+                if (this.liveMode) {
+                    this.stopLiveMode();
+                } else {
+                    this.startLiveMode();
+                }
+            }
+
+            async startLiveMode() {
+                this.liveMode = true;
+                this.stop(); // Arrêter toute lecture en cours
+                
+                // Créer une trajectoire live
+                this.liveTrajectory = {
+                    id: 'live',
+                    name: "📡 Trajectoire Live",
+                    type: "live",
+                    points: [],
+                    duration: 0,
+                    color: "#e74c3c"
+                };
+                
+                this.currentTrajectory = this.liveTrajectory;
+                
+                // Mettre à jour l'interface
+                document.getElementById('loadLiveBtn').textContent = '⏹️ Arrêter Live';
+                document.getElementById('loadLiveBtn').classList.remove('btn-success');
+                document.getElementById('loadLiveBtn').classList.add('btn-danger');
+                
+                // Désactiver les contrôles de lecture
+                document.getElementById('playBtn').disabled = true;
+                document.getElementById('pauseBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = true;
+                document.getElementById('resetBtn').disabled = true;
+                
+                // Ajouter à la liste (temporairement)
+                this.addLiveTrajectoryToList();
+                
+                // Démarrer la récupération des données
+                this.liveUpdateInterval = setInterval(() => {
+                    this.fetchLiveData();
+                }, 2000); // Mise à jour toutes les 2 secondes
+                
+                // Première récupération immédiate
+                this.fetchLiveData();
+                
+                this.addToTimeline('🚀 Mode Live activé');
+            }
+
+            stopLiveMode() {
+                this.liveMode = false;
+                
+                if (this.liveUpdateInterval) {
+                    clearInterval(this.liveUpdateInterval);
+                    this.liveUpdateInterval = null;
+                }
+                
+                // Remettre l'interface normale
+                document.getElementById('loadLiveBtn').textContent = '📡 Trajectoire Live';
+                document.getElementById('loadLiveBtn').classList.add('btn-success');
+                document.getElementById('loadLiveBtn').classList.remove('btn-danger');
+                
+                // Réactiver les contrôles
+                document.getElementById('playBtn').disabled = false;
+                document.getElementById('pauseBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = true;
+                document.getElementById('resetBtn').disabled = false;
+                
+                // Convertir la trajectoire live en trajectoire normale pour replay
+                if (this.liveTrajectory && this.liveTrajectory.points.length > 0) {
+                    const savedTrajectory = {
+                        ...this.liveTrajectory,
+                        name: `📡 Live Sauvé (${new Date().toLocaleTimeString()})`,
+                        type: "replay",
+                        id: Date.now()
+                    };
+                    
+                    this.trajectories.unshift(savedTrajectory);
+                    this.displayTrajectoryList();
+                    this.addToTimeline('💾 Trajectoire live sauvegardée');
+                }
+                
+                this.addToTimeline('⏹️ Mode Live désactivé');
+            }
+
+            async fetchLiveData() {
+                try {
+                    const response = await fetch('api_get_positions.php?type=all');
+                    if (!response.ok) throw new Error('Erreur réseau');
+                    
+                    const data = await response.json();
+                    
+                    if (data.error) {
+                        this.addToTimeline(`❌ Erreur API: ${data.error}`);
+                        return;
+                    }
+                    
+                    // Combiner les données ultrason et son
+                    const allPoints = [];
+                    if (data.ultrason) allPoints.push(...data.ultrason.map(p => ({...p, source: 'ultrason'})));
+                    if (data.son) allPoints.push(...data.son.map(p => ({...p, source: 'son'})));
+                    
+                    // Trier par timestamp si disponible
+                    allPoints.sort((a, b) => {
+                        if (a.timestamp && b.timestamp) {
+                            return new Date(a.timestamp) - new Date(b.timestamp);
+                        }
+                        return 0;
+                    });
+                    
+                    // Ajouter les nouveaux points
+                    allPoints.forEach(point => {
+                        const existingPoint = this.liveTrajectory.points.find(p => 
+                            Math.abs(p.x - parseFloat(point.pos_x_estimee)) < 0.01 && 
+                            Math.abs(p.y - parseFloat(point.pos_y_estimee)) < 0.01
+                        );
+                        
+                        if (!existingPoint) {
+                            this.liveTrajectory.points.push({
+                                x: parseFloat(point.pos_x_estimee),
+                                y: parseFloat(point.pos_y_estimee),
+                                timestamp: point.timestamp ? new Date(point.timestamp) : new Date(),
+                                accuracy: 95 + Math.random() * 5,
+                                source: point.source || 'unknown'
+                            });
+                        }
+                    });
+                    
+                    // Limiter le nombre de points (garder les 100 derniers)
+                    if (this.liveTrajectory.points.length > 100) {
+                        this.liveTrajectory.points = this.liveTrajectory.points.slice(-100);
+                    }
+                    
+                    // Mettre à jour la durée
+                    if (this.liveTrajectory.points.length > 1) {
+                        const firstPoint = this.liveTrajectory.points[0];
+                        const lastPoint = this.liveTrajectory.points[this.liveTrajectory.points.length - 1];
+                        this.liveTrajectory.duration = (lastPoint.timestamp - firstPoint.timestamp) / 1000;
+                    }
+                    
+                    // Mettre à jour l'affichage
+                    this.currentFrame = this.liveTrajectory.points.length - 1;
+                    this.analyzeTrajectory();
+                    this.drawTrajectory();
+                    this.updateProgress();
+                    
+                    if (allPoints.length > 0) {
+                        this.addToTimeline(`📡 ${allPoints.length} nouveau(x) point(s) reçu(s)`);
+                    }
+                    
+                } catch (error) {
+                    console.error('Erreur lors de la récupération des données live:', error);
+                    this.addToTimeline(`❌ Erreur live: ${error.message}`);
+                }
+            }
+
+            addLiveTrajectoryToList() {
+                const container = document.getElementById('trajectoryList');
+                
+                // Supprimer l'ancienne entrée live si elle existe
+                const existingLive = container.querySelector('.trajectory-live');
+                if (existingLive) {
+                    existingLive.remove();
+                }
+                
+                const item = document.createElement('div');
+                item.className = 'trajectory-item trajectory-live selected';
+                item.style.border = '2px solid #e74c3c';
+                item.innerHTML = `
+                    <div class="trajectory-info">
+                        <span class="trajectory-name">📡 Trajectoire Live</span>
+                        <span style="color: #e74c3c;" class="pulse">●</span>
+                    </div>
+                    <div class="trajectory-stats">
+                        Type: Temps réel | <span id="livePointCount">0</span> points
+                    </div>
+                    <div class="trajectory-stats">
+                        Durée: <span id="liveDuration">0</span>s
+                    </div>
+                `;
+                
+                container.insertBefore(item, container.firstChild);
+                
+                // Mettre à jour le compteur en temps réel
+                setInterval(() => {
+                    if (this.liveMode && this.liveTrajectory) {
+                        const pointCountElement = document.getElementById('livePointCount');
+                        const durationElement = document.getElementById('liveDuration');
+                        
+                        if (pointCountElement) {
+                            pointCountElement.textContent = this.liveTrajectory.points.length;
+                        }
+                        if (durationElement) {
+                            durationElement.textContent = Math.round(this.liveTrajectory.duration || 0);
+                        }
+                    }
+                }, 1000);
+            }
+
+            addToTimeline(message) {
+                const container = document.getElementById('timelineEvents');
+                
+                const item = document.createElement('div');
+                item.className = 'timeline-item';
+                const time = new Date().toLocaleTimeString();
+                
+                item.innerHTML = `
+                    <div class="timeline-time">[${time}]</div>
+                    <div class="timeline-event">${message}</div>
+                `;
+                
+                container.insertBefore(item, container.firstChild);
+                
+                // Limiter à 10 entrées
+                while (container.children.length > 10) {
+                    container.removeChild(container.lastChild);
+                }
+            }
+        }
+
+        // Initialisation
+        window.addEventListener('load', () => {
+            new TrajectoryAnalyzer();
+        });
+    </script>
+</body>
+</html>

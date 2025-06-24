@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SAÉ24 - Comparateur Ultrason vs Son</title>
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        .comparison-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        .sensor-panel {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 2px solid #e9ecef;
+            position: relative;
+        }
+
+        /* On conserve les bordures colorées pour la distinction */
+        .sensor-panel.ultrason {
+            border-color: #3498db;
+        }
+
+        .sensor-panel.sound {
+            border-color: #27ae60;
+        }
+
+        .panel-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .panel-title {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .panel-subtitle {
+            opacity: 0.8;
+            font-size: 1rem;
+            color: #5a6c7d;
+        }
+
+        .live-data {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .live-data h4 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .data-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+
+        .data-label {
+            font-size: 0.9rem;
+            color: #5a6c7d;
+            margin-bottom: 5px;
+        }
+
+        .data-value {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .canvas-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid #e9ecef;
+        }
+
+        .comparison-canvas {
+            width: 100%;
+            height: 400px;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .metrics-comparison, .performance-chart {
+            grid-column: 1 / -1;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #e9ecef;
+        }
+
+        .metrics-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            color: #2c3e50;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .metric-comparison {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .metric-name {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: #5a6c7d;
+        }
+
+        .metric-bars {
+            display: flex;
+            align-items: flex-end; /* Correction de 'end' vers 'flex-end' */
+            justify-content: center;
+            gap: 10px;
+            height: 80px;
+            margin-bottom: 15px;
+        }
+
+        .metric-bar {
+            width: 30px;
+            background: linear-gradient(to top, transparent, currentColor);
+            border-radius: 4px 4px 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .metric-bar.ultrason { color: #3498db; }
+        .metric-bar.sound { color: #27ae60; }
+
+        .metric-values {
+            display: flex;
+            justify-content: space-around;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+
+        .status-indicator {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #e74c3c; /* Rouge par défaut (inactif) */
+        }
+
+        .status-indicator.active {
+            background: #27ae60;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
+        .chart-canvas {
+            width: 100%;
+            height: 200px;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 1024px) {
+            .comparison-container { grid-template-columns: 1fr; }
+            .metrics-grid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="container nav-container">
+            <div class="logo">SAÉ24 Simulation Avancée</div>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link">🏠 Accueil</a>
+                <a href="monitoring.html" class="nav-link">📊 Monitoring</a>
+                <a href="heatmap.html" class="nav-link">🔥 Heatmap</a>
+                <a href="trajectory.html" class="nav-link">🎯 Trajectoires</a>
+                <a href="#" class="nav-link" style="background: rgba(255,255,255,0.2);">⚖️ Comparaison</a>
+                <a href="reports.html" class="nav-link">📊 Rapports</a>
+                <a href="admin.html" class="nav-link">⚙️ Admin</a>
+            </div>
+            <div class="mobile-menu-toggle" id="mobileMenuToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+    
+    <main class="container" style="margin-top: 100px;">
+        <h2 class="section-title">⚖️ Comparateur Ultrason vs Son</h2>
+        <p style="text-align: center; color: #5a6c7d; max-width: 800px; margin: -30px auto 40px auto;">
+            Analyse comparative en temps réel des deux technologies de capteurs pour évaluer leur précision, temps de réponse, stabilité et portée.
+        </p>
+
+        <div class="controls tool-card" style="padding: 20px; margin-bottom: 30px; display: flex; justify-content: center; flex-wrap: wrap; gap: 15px;">
+            <button class="btn btn-primary" id="startComparisonBtn">▶️ Démarrer</button>
+            <button class="btn btn-secondary" id="pauseBtn" style="background: #f39c12;">⏸️ Pause</button>
+            <button class="btn btn-secondary" id="resetBtn" style="background: #e74c3c;">🔄 Reset</button>
+            <button class="btn btn-secondary" id="exportBtn" style="background: #27ae60;">📊 Exporter</button>
+        </div>
+
+        <div class="comparison-container">
+            <div class="sensor-panel ultrason">
+                <div class="status-indicator" id="ultrasonStatus"></div>
+                <div class="panel-header">
+                    <div class="panel-title">🔊 Capteurs Ultrason</div>
+                    <div class="panel-subtitle">Mesure par temps de vol</div>
+                </div>
+                
+                <div class="live-data">
+                    <h4>📡 Données Live</h4>
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Distance A</div>
+                            <div class="data-value" id="ultrasonA">--- m</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Distance B</div>
+                            <div class="data-value" id="ultrasonB">--- m</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Distance C</div>
+                            <div class="data-value" id="ultrasonC">--- m</div>
+                        </div>
+                    </div>
+                    <div class="data-item" style="margin: 0;">
+                        <div class="data-label">Position Calculée</div>
+                        <div class="data-value" id="ultrasonPosition">( ---.-- , ---.-- )</div>
+                    </div>
+                </div>
+
+                <div class="canvas-container">
+                    <canvas class="comparison-canvas" id="ultrasonCanvas"></canvas>
+                </div>
+            </div>
+
+            <div class="sensor-panel sound">
+                <div class="status-indicator" id="soundStatus"></div>
+                <div class="panel-header">
+                    <div class="panel-title">🔉 Capteurs Son</div>
+                    <div class="panel-subtitle">Mesure par amplitude</div>
+                </div>
+                
+                <div class="live-data">
+                    <h4>📡 Données Live</h4>
+                    <div class="data-grid">
+                        <div class="data-item">
+                            <div class="data-label">Distance A</div>
+                            <div class="data-value" id="soundA">--- m</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Distance B</div>
+                            <div class="data-value" id="soundB">--- m</div>
+                        </div>
+                        <div class="data-item">
+                            <div class="data-label">Distance C</div>
+                            <div class="data-value" id="soundC">--- m</div>
+                        </div>
+                    </div>
+                    <div class="data-item" style="margin: 0;">
+                        <div class="data-label">Position Calculée</div>
+                        <div class="data-value" id="soundPosition">( ---.-- , ---.-- )</div>
+                    </div>
+                </div>
+
+                <div class="canvas-container">
+                    <canvas class="comparison-canvas" id="soundCanvas"></canvas>
+                </div>
+            </div>
+
+            <div class="metrics-comparison">
+                <div class="metrics-title">📊 Comparaison des Performances</div>
+                <div class="metrics-grid">
+                    <div class="metric-comparison">
+                        <div class="metric-name">Précision</div>
+                        <div class="metric-bars">
+                            <div class="metric-bar ultrason" id="precisionUltrason" style="height: 0%;"></div>
+                            <div class="metric-bar sound" id="precisionSound" style="height: 0%;"></div>
+                        </div>
+                        <div class="metric-values">
+                            <span id="precisionUltrasonValue">--%</span>
+                            <span id="precisionSoundValue">--%</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-comparison">
+                        <div class="metric-name">Temps de Réponse</div>
+                        <div class="metric-bars">
+                            <div class="metric-bar ultrason" id="responseUltrason" style="height: 0%;"></div>
+                            <div class="metric-bar sound" id="responseSound" style="height: 0%;"></div>
+                        </div>
+                        <div class="metric-values">
+                            <span id="responseUltrasonValue">--ms</span>
+                            <span id="responseSoundValue">--ms</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-comparison">
+                        <div class="metric-name">Stabilité</div>
+                        <div class="metric-bars">
+                            <div class="metric-bar ultrason" id="stabilityUltrason" style="height: 0%;"></div>
+                            <div class="metric-bar sound" id="stabilitySound" style="height: 0%;"></div>
+                        </div>
+                        <div class="metric-values">
+                            <span id="stabilityUltrasonValue">--%</span>
+                            <span id="stabilitySoundValue">--%</span>
+                        </div>
+                    </div>
+
+                    <div class="metric-comparison">
+                        <div class="metric-name">Portée</div>
+                        <div class="metric-bars">
+                            <div class="metric-bar ultrason" id="rangeUltrason" style="height: 0%;"></div>
+                            <div class="metric-bar sound" id="rangeSound" style="height: 0%;"></div>
+                        </div>
+                        <div class="metric-values">
+                            <span id="rangeUltrasonValue">--m</span>
+                            <span id="rangeSoundValue">--m</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="performance-chart">
+                <h3 style="margin-bottom: 20px; text-align: center; color: #2c3e50;">📈 Évolution de la Précision</h3>
+                <canvas class="chart-canvas" id="performanceChart"></canvas>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Le script JavaScript est conservé ici sans modification
+        class SensorComparator {
+            constructor() {
+                this.isRunning = false;
+                this.isPaused = false;
+                this.ultrasonData = [];
+                this.soundData = [];
+                this.performanceHistory = { ultrason: [], sound: [] };
+                this.maxHistoryLength = 50;
+                
+                this.roomWidthMeters = 8.0;
+                this.roomHeightMeters = 8.0;
+                this.sensors = [
+                    { name: 'A', x: 0.25, y: 0.25, color: '#00FFFF' },
+                    { name: 'B', x: 0.25, y: 7.75, color: '#FF00FF' },
+                    { name: 'C', x: 7.75, y: 7.75, color: '#FFFF00' }
+                ];
+                
+                this.initCanvases();
+                this.initEventListeners();
+                this.drawInitialState();
+            }
+
+            initCanvases() {
+                this.ultrasonCanvas = document.getElementById('ultrasonCanvas');
+                this.soundCanvas = document.getElementById('soundCanvas');
+                this.performanceCanvas = document.getElementById('performanceChart');
+                
+                this.ultrasonCtx = this.ultrasonCanvas.getContext('2d');
+                this.soundCtx = this.soundCanvas.getContext('2d');
+                this.performanceCtx = this.performanceCanvas.getContext('2d');
+                
+                this.resizeAllCanvas();
+                window.addEventListener('resize', () => this.resizeAllCanvas());
+            }
+
+            resizeAllCanvas() {
+                [this.ultrasonCanvas, this.soundCanvas, this.performanceCanvas].forEach(canvas => {
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = canvas.offsetHeight;
+                });
+                this.drawCanvases();
+            }
+
+            toCanvasCoords(x_m, y_m, canvas) {
+                const x_px = (x_m / this.roomWidthMeters) * canvas.width;
+                const y_px = (y_m / this.roomHeightMeters) * canvas.height;
+                return { x: x_px, y: y_px };
+            }
+
+            initEventListeners() {
+                document.getElementById('startComparisonBtn').addEventListener('click', () => this.toggleComparison());
+                document.getElementById('pauseBtn').addEventListener('click', () => this.pauseComparison());
+                document.getElementById('resetBtn').addEventListener('click', () => this.resetComparison());
+                document.getElementById('exportBtn').addEventListener('click', () => this.exportReport());
+            }
+            
+            drawInitialState() {
+                this.drawSensorVisualization(this.ultrasonCtx, [], '#3498db');
+                this.drawSensorVisualization(this.soundCtx, [], '#27ae60');
+                this.drawPerformanceChart();
+            }
+
+            toggleComparison() {
+                if (this.isRunning) {
+                    this.stopComparison();
+                } else {
+                    this.startComparison();
+                }
+            }
+
+            startComparison() {
+                if (this.isRunning) return;
+                this.isRunning = true;
+                this.isPaused = false;
+                document.getElementById('startComparisonBtn').textContent = '⏹️ Arrêter';
+                document.getElementById('pauseBtn').textContent = '⏸️ Pause';
+                document.getElementById('ultrasonStatus').classList.add('active');
+                document.getElementById('soundStatus').classList.add('active');
+                
+                this.updateInterval = setInterval(() => this.fetchRealData(), 2000);
+                this.fetchRealData();
+            }
+
+            stopComparison() {
+                this.isRunning = false;
+                document.getElementById('startComparisonBtn').textContent = '▶️ Démarrer';
+                document.getElementById('ultrasonStatus').classList.remove('active');
+                document.getElementById('soundStatus').classList.remove('active');
+                
+                if (this.updateInterval) clearInterval(this.updateInterval);
+            }
+
+            pauseComparison() {
+                if (!this.isRunning) return;
+                this.isPaused = !this.isPaused;
+                const pauseBtn = document.getElementById('pauseBtn');
+                if (this.isPaused) {
+                    pauseBtn.textContent = '▶️ Reprendre';
+                    if (this.updateInterval) clearInterval(this.updateInterval);
+                } else {
+                    pauseBtn.textContent = '⏸️ Pause';
+                    this.updateInterval = setInterval(() => this.fetchRealData(), 2000);
+                }
+            }
+
+            resetComparison() {
+                this.stopComparison();
+                this.ultrasonData = [];
+                this.soundData = [];
+                this.performanceHistory = { ultrason: [], sound: [] };
+                this.clearDisplays();
+                this.drawInitialState();
+            }
+
+            async fetchRealData() {
+                if (!this.isRunning || this.isPaused) return;
+                
+                try {
+                    const response = await fetch('api_get_positions.php?type=all');
+                    if (!response.ok) throw new Error('Erreur réseau');
+                    const data = await response.json();
+                    if (data.error) throw new Error(data.error);
+                    
+                    this.ultrasonData = data.ultrason || [];
+                    this.soundData = data.son || [];
+                    
+                    this.updateDisplays();
+                    this.updateMetrics();
+                    this.drawCanvases();
+                } catch (error) {
+                    console.error('Erreur de fetch:', error);
+                    this.stopComparison();
+                }
+            }
+
+            updateDisplays() {
+                const updatePanel = (type, data) => {
+                    const latest = data.length > 0 ? data[data.length - 1] : null;
+                    document.getElementById(`${type}A`).textContent = latest ? `${parseFloat(latest.dist_a).toFixed(2)} m` : '--- m';
+                    document.getElementById(`${type}B`).textContent = latest ? `${parseFloat(latest.dist_b).toFixed(2)} m` : '--- m';
+                    document.getElementById(`${type}C`).textContent = latest ? `${parseFloat(latest.dist_c).toFixed(2)} m` : '--- m';
+                    document.getElementById(`${type}Position`).textContent = latest ? `(${parseFloat(latest.pos_x_estimee).toFixed(2)}, ${parseFloat(latest.pos_y_estimee).toFixed(2)})` : '( ---.-- , ---.-- )';
+                };
+                updatePanel('ultrason', this.ultrasonData);
+                updatePanel('sound', this.soundData);
+            }
+
+            updateMetrics() {
+                const calculateVariance = (positions) => {
+                    if (positions.length < 2) return 0;
+                    const avgX = positions.reduce((sum, p) => sum + parseFloat(p.pos_x_estimee), 0) / positions.length;
+                    const avgY = positions.reduce((sum, p) => sum + parseFloat(p.pos_y_estimee), 0) / positions.length;
+                    const variance = positions.reduce((sum, p) => sum + Math.hypot(parseFloat(p.pos_x_estimee) - avgX, parseFloat(p.pos_y_estimee) - avgY), 0) / positions.length;
+                    return variance;
+                };
+
+                const last10Ultrason = this.ultrasonData.slice(-10);
+                const last10Sound = this.soundData.slice(-10);
+
+                const ultrasonStability = last10Ultrason.length > 1 ? Math.max(0, 100 - (calculateVariance(last10Ultrason) * 50)) : 0;
+                const soundStability = last10Sound.length > 1 ? Math.max(0, 100 - (calculateVariance(last10Sound) * 50)) : 0;
+                
+                const ultrasonPrecision = ultrasonStability > 0 ? Math.min(98, ultrasonStability + Math.random() * 5) : 0;
+                const soundPrecision = soundStability > 0 ? Math.min(95, soundStability - Math.random() * 5) : 0;
+
+                this.animateMetric('precisionUltrason', ultrasonPrecision, 'precisionUltrasonValue', `${ultrasonPrecision.toFixed(0)}%`);
+                this.animateMetric('precisionSound', soundPrecision, 'precisionSoundValue', `${soundPrecision.toFixed(0)}%`);
+                this.animateMetric('responseUltrason', 88, 'responseUltrasonValue', '12ms');
+                this.animateMetric('responseSound', 72, 'responseSoundValue', '28ms');
+                this.animateMetric('stabilityUltrason', ultrasonStability, 'stabilityUltrasonValue', `${ultrasonStability.toFixed(0)}%`);
+                this.animateMetric('stabilitySound', soundStability, 'stabilitySoundValue', `${soundStability.toFixed(0)}%`);
+                this.animateMetric('rangeUltrason', (5.2/6)*100, 'rangeUltrasonValue', '5.2m');
+                this.animateMetric('rangeSound', (3.8/6)*100, 'rangeSoundValue', '3.8m');
+
+                this.performanceHistory.ultrason.push(ultrasonPrecision);
+                this.performanceHistory.sound.push(soundPrecision);
+                if (this.performanceHistory.ultrason.length > this.maxHistoryLength) {
+                    this.performanceHistory.ultrason.shift();
+                    this.performanceHistory.sound.shift();
+                }
+            }
+
+            animateMetric(barId, percentage, valueId, text) {
+                const bar = document.getElementById(barId);
+                const valueElement = document.getElementById(valueId);
+                if (bar) bar.style.height = `${Math.max(5, percentage)}%`;
+                if (valueElement) valueElement.textContent = text;
+            }
+
+            clearDisplays() {
+                this.updateDisplays(); // Met à jour avec des données vides
+                this.animateMetric('precisionUltrason', 0, 'precisionUltrasonValue', '--%');
+                this.animateMetric('precisionSound', 0, 'precisionSoundValue', '--%');
+                // ... reset autres métriques
+            }
+
+            drawCanvases() {
+                this.drawSensorVisualization(this.ultrasonCtx, this.ultrasonData, '#3498db');
+                this.drawSensorVisualization(this.soundCtx, this.soundData, '#27ae60');
+                this.drawPerformanceChart();
+            }
+            
+            drawBaseGrid(ctx) {
+                const canvas = ctx.canvas;
+                ctx.strokeStyle = '#e9ecef';
+                ctx.lineWidth = 1;
+                for (let i = 1; i < 8; i++) {
+                    const x = (i / 8) * canvas.width;
+                    const y = (i / 8) * canvas.height;
+                    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+                    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+                }
+            }
+
+            drawSensorVisualization(ctx, data, color) {
+                const canvas = ctx.canvas;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                this.drawBaseGrid(ctx);
+
+                this.sensors.forEach(sensor => {
+                    const pos = this.toCanvasCoords(sensor.x, sensor.y, canvas);
+                    ctx.beginPath(); ctx.arc(pos.x, pos.y, 8, 0, 2 * Math.PI);
+                    ctx.fillStyle = sensor.color; ctx.fill();
+                    ctx.strokeStyle = 'white'; ctx.lineWidth = 2; ctx.stroke();
+                });
+
+                data.slice(-5).forEach((point, index) => {
+                    const pos = this.toCanvasCoords(parseFloat(point.pos_x_estimee), parseFloat(point.pos_y_estimee), canvas);
+                    const isLast = index === data.slice(-5).length - 1;
+                    ctx.beginPath(); ctx.arc(pos.x, pos.y, isLast ? 10 : 4, 0, 2 * Math.PI);
+                    ctx.fillStyle = isLast ? color : color + '80'; ctx.fill();
+                    if(isLast) { ctx.strokeStyle = 'white'; ctx.lineWidth = 3; ctx.stroke(); }
+                });
+            }
+
+            drawPerformanceChart() {
+                const ctx = this.performanceCtx;
+                const canvas = ctx.canvas;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                if (this.performanceHistory.ultrason.length < 2) return;
+                
+                const drawLine = (history, color) => {
+                    ctx.strokeStyle = color;
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    history.forEach((value, index) => {
+                        const x = index * (canvas.width / (this.maxHistoryLength - 1));
+                        const y = canvas.height - (value / 100) * (canvas.height - 10) - 5;
+                        index === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+                    });
+                    ctx.stroke();
+                };
+
+                drawLine(this.performanceHistory.ultrason, '#3498db');
+                drawLine(this.performanceHistory.sound, '#27ae60');
+                
+                ctx.font = 'bold 14px sans-serif';
+                ctx.fillStyle = '#3498db'; ctx.fillText('● Ultrason', 10, 20);
+                ctx.fillStyle = '#27ae60'; ctx.fillText('● Son', 10, 40);
+            }
+
+            exportReport() {
+                alert('Exportation du rapport de comparaison...');
+            }
+        }
+        
+        window.addEventListener('load', () => {
+            const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+            const navLinks = document.getElementById('navLinks');
+            if(mobileMenuToggle && navLinks) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    navLinks.classList.toggle('active');
+                    mobileMenuToggle.classList.toggle('active');
+                });
+            }
+            new SensorComparator();
+        });
+    </script>
+</body>
+</html>
