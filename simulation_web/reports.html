@@ -261,7 +261,7 @@
             <p>Créez des rapports professionnels automatisés de votre projet IoT</p>
         </div>
 
-        <!-- Configuration du Rapport -->
+        <!-- Report Configuration -->
         <div class="report-builder">
             <h2 class="section-title">⚙️ Configuration du Rapport</h2>
             
@@ -417,7 +417,7 @@
                     });
                 }
                 
-                // Sélection de template
+                // Template selection
                 document.querySelectorAll('.template-card').forEach(card => {
                     card.addEventListener('click', () => {
                         document.querySelectorAll('.template-card').forEach(c => c.classList.remove('selected'));
@@ -426,7 +426,7 @@
                     });
                 });
 
-                // Boutons d'action
+                // Action buttons
                 document.getElementById('previewBtn').addEventListener('click', () => this.generatePreview());
                 document.getElementById('generatePDFBtn').addEventListener('click', () => this.generatePDF());
                 document.getElementById('generateHTMLBtn').addEventListener('click', () => this.generateHTML());
@@ -554,8 +554,8 @@
                 const soundAccuracy = soundData.length > 0 ? this.calculateRealAccuracy([], soundData) : 0;
                 return {
                     ultrasonAccuracy, soundAccuracy,
-                    responseTime: 15 + Math.random() * 20, // Simulé
-                    dataLoss: Math.max(0, (1 - (ultrasonData.length + soundData.length) / 1000) * 100) // Simulé
+                    responseTime: 15 + Math.random() * 20, // Simulated
+                    dataLoss: Math.max(0, (1 - (ultrasonData.length + soundData.length) / 1000) * 100) // Simulated
                 };
             }
 

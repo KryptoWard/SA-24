@@ -230,7 +230,7 @@
             }
 
             loadSampleTrajectories() {
-                // Simulation de trajectoires diverses
+                // Simulation of various trajectories
                 this.trajectories = [
                     {
                         id: 1,
@@ -455,11 +455,11 @@
             drawRoom() {
                 this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
                 
-                // Fond de la pièce
+                // Room background
                 this.ctx.fillStyle = 'rgba(255,255,255,0.05)';
                 this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
                 
-                // Grille
+                // Grid
                 this.ctx.strokeStyle = 'rgba(255,255,255,0.1)';
                 this.ctx.lineWidth = 1;
                 for (let i = 0; i <= 8; i++) {
@@ -474,7 +474,7 @@
                     this.ctx.stroke();
                 }
                 
-                // Capteurs
+                // Sensors
                 const sensorColors = { 'A': '#00FFFF', 'B': '#FF00FF', 'C': '#FFFF00' };
                 Object.entries(this.sensors).forEach(([name, pos]) => {
                     const x = (pos[0] / this.roomWidth) * this.canvas.width;
@@ -503,7 +503,7 @@
                 const points = this.currentTrajectory.points;
                 const currentIndex = Math.floor(this.currentFrame);
                 
-                // Dessiner le chemin complet (atténué)
+                // Draw the full path (faded)
                 if (points.length > 1) {
                     this.ctx.strokeStyle = this.currentTrajectory.color + '40';
                     this.ctx.lineWidth = 2;
@@ -523,7 +523,7 @@
                     this.ctx.stroke();
                 }
                 
-                // Dessiner le chemin parcouru (en couleur)
+                // Draw the traveled path (colored)
                 if (currentIndex > 0) {
                     this.ctx.strokeStyle = this.currentTrajectory.color;
                     this.ctx.lineWidth = 3;
@@ -544,7 +544,7 @@
                     this.ctx.stroke();
                 }
                 
-                // Dessiner les points visités
+                // Draw visited points
                 points.slice(0, currentIndex + 1).forEach((point, index) => {
                     const x = (point.x / this.roomWidth) * this.canvas.width;
                     const y = (point.y / this.roomHeight) * this.canvas.height;
@@ -556,7 +556,7 @@
                     this.ctx.fill();
                 });
                 
-                // Position actuelle
+                // Current position
                 if (currentIndex < points.length) {
                     const currentPoint = points[currentIndex];
                     const x = (currentPoint.x / this.roomWidth) * this.canvas.width;
@@ -577,7 +577,7 @@
                 
                 const points = this.currentTrajectory.points;
                 
-                // Calcul de la distance totale
+                // Calculate total distance
                 let totalDistance = 0;
                 for (let i = 1; i < points.length; i++) {
                     const prev = points[i - 1];
@@ -585,13 +585,13 @@
                     totalDistance += Math.sqrt(Math.pow(curr.x - prev.x, 2) + Math.pow(curr.y - prev.y, 2));
                 }
                 
-                // Vitesse moyenne
+                // Average speed
                 const avgSpeed = totalDistance / this.currentTrajectory.duration;
                 
-                // Précision moyenne
+                // Average accuracy
                 const avgAccuracy = points.reduce((sum, p) => sum + p.accuracy, 0) / points.length;
                 
-                // Mise à jour de l'affichage
+                // Update the display
                 document.getElementById('totalDistance').textContent = totalDistance.toFixed(1);
                 document.getElementById('avgSpeed').textContent = avgSpeed.toFixed(2);
                 document.getElementById('duration').textContent = this.currentTrajectory.duration;
@@ -603,7 +603,7 @@
             }
 
             drawHeatmap() {
-                // Heatmap simplifiée des zones visitées
+                // Simplified heatmap of visited areas
                 const ctx = this.heatmapCtx;
                 const width = this.heatmapCanvas.width;
                 const height = this.heatmapCanvas.height;
@@ -612,7 +612,7 @@
                 
                 if (!this.currentTrajectory) return;
                 
-                // Grille de densité
+                // Density grid
                 const gridSize = 20;
                 const grid = Array(gridSize).fill().map(() => Array(gridSize).fill(0));
                 
@@ -644,7 +644,7 @@
             }
 
             drawSpeedChart() {
-                // Graphique de vitesse simplifié
+                // Simplified speed chart
                 const ctx = this.speedCtx;
                 const width = this.speedCanvas.width;
                 const height = this.speedCanvas.height;
@@ -759,9 +759,9 @@
 
             async startLiveMode() {
                 this.liveMode = true;
-                this.stop(); // Arrêter toute lecture en cours
+                this.stop(); // Stop any current playback
                 
-                // Créer une trajectoire live
+                // Create a live trajectory
                 this.liveTrajectory = {
                     id: 'live',
                     name: "📡 Trajectoire Live",
@@ -773,26 +773,26 @@
                 
                 this.currentTrajectory = this.liveTrajectory;
                 
-                // Mettre à jour l'interface
+                // Update the interface
                 document.getElementById('loadLiveBtn').textContent = '⏹️ Arrêter Live';
                 document.getElementById('loadLiveBtn').classList.remove('btn-success');
                 document.getElementById('loadLiveBtn').classList.add('btn-danger');
                 
-                // Désactiver les contrôles de lecture
+                // Disable playback controls
                 document.getElementById('playBtn').disabled = true;
                 document.getElementById('pauseBtn').disabled = true;
                 document.getElementById('stopBtn').disabled = true;
                 document.getElementById('resetBtn').disabled = true;
                 
-                // Ajouter à la liste (temporairement)
+                // Add to the list temporarily
                 this.addLiveTrajectoryToList();
                 
-                // Démarrer la récupération des données
+                // Start fetching data
                 this.liveUpdateInterval = setInterval(() => {
                     this.fetchLiveData();
-                }, 2000); // Mise à jour toutes les 2 secondes
+                }, 2000); // Update every 2 seconds
                 
-                // Première récupération immédiate
+                // First immediate fetch
                 this.fetchLiveData();
                 
                 this.addToTimeline('🚀 Mode Live activé');
@@ -806,18 +806,18 @@
                     this.liveUpdateInterval = null;
                 }
                 
-                // Remettre l'interface normale
+                // Restore the normal interface
                 document.getElementById('loadLiveBtn').textContent = '📡 Trajectoire Live';
                 document.getElementById('loadLiveBtn').classList.add('btn-success');
                 document.getElementById('loadLiveBtn').classList.remove('btn-danger');
                 
-                // Réactiver les contrôles
+                // Re-enable controls
                 document.getElementById('playBtn').disabled = false;
                 document.getElementById('pauseBtn').disabled = true;
                 document.getElementById('stopBtn').disabled = true;
                 document.getElementById('resetBtn').disabled = false;
                 
-                // Convertir la trajectoire live en trajectoire normale pour replay
+                // Convert the live trajectory to a normal one for replay
                 if (this.liveTrajectory && this.liveTrajectory.points.length > 0) {
                     const savedTrajectory = {
                         ...this.liveTrajectory,
@@ -846,12 +846,12 @@
                         return;
                     }
                     
-                    // Combiner les données ultrason et son
+                    // Combine ultrasound and sound data
                     const allPoints = [];
                     if (data.ultrason) allPoints.push(...data.ultrason.map(p => ({...p, source: 'ultrason'})));
                     if (data.son) allPoints.push(...data.son.map(p => ({...p, source: 'son'})));
                     
-                    // Trier par timestamp si disponible
+                    // Sort by timestamp if available
                     allPoints.sort((a, b) => {
                         if (a.timestamp && b.timestamp) {
                             return new Date(a.timestamp) - new Date(b.timestamp);
@@ -859,7 +859,7 @@
                         return 0;
                     });
                     
-                    // Ajouter les nouveaux points
+                    // Add new points
                     allPoints.forEach(point => {
                         const existingPoint = this.liveTrajectory.points.find(p => 
                             Math.abs(p.x - parseFloat(point.pos_x_estimee)) < 0.01 && 
@@ -877,19 +877,19 @@
                         }
                     });
                     
-                    // Limiter le nombre de points (garder les 100 derniers)
+                    // Limit the number of points (keep the last 100)
                     if (this.liveTrajectory.points.length > 100) {
                         this.liveTrajectory.points = this.liveTrajectory.points.slice(-100);
                     }
                     
-                    // Mettre à jour la durée
+                    // Update duration
                     if (this.liveTrajectory.points.length > 1) {
                         const firstPoint = this.liveTrajectory.points[0];
                         const lastPoint = this.liveTrajectory.points[this.liveTrajectory.points.length - 1];
                         this.liveTrajectory.duration = (lastPoint.timestamp - firstPoint.timestamp) / 1000;
                     }
                     
-                    // Mettre à jour l'affichage
+                    // Update display
                     this.currentFrame = this.liveTrajectory.points.length - 1;
                     this.analyzeTrajectory();
                     this.drawTrajectory();
@@ -908,7 +908,7 @@
             addLiveTrajectoryToList() {
                 const container = document.getElementById('trajectoryList');
                 
-                // Supprimer l'ancienne entrée live si elle existe
+                // Remove old live entry if it exists
                 const existingLive = container.querySelector('.trajectory-live');
                 if (existingLive) {
                     existingLive.remove();
@@ -932,7 +932,7 @@
                 
                 container.insertBefore(item, container.firstChild);
                 
-                // Mettre à jour le compteur en temps réel
+                // Update the counter in real time
                 setInterval(() => {
                     if (this.liveMode && this.liveTrajectory) {
                         const pointCountElement = document.getElementById('livePointCount');
@@ -962,14 +962,14 @@
                 
                 container.insertBefore(item, container.firstChild);
                 
-                // Limiter à 10 entrées
+                // Limit to 10 entries
                 while (container.children.length > 10) {
                     container.removeChild(container.lastChild);
                 }
             }
         }
 
-        // Initialisation
+        // Initialization
         window.addEventListener('load', () => {
             new TrajectoryAnalyzer();
         });

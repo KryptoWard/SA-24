@@ -248,7 +248,7 @@
             }
 
             initEventListeners() {
-                // Vérifier que les éléments existent avant d'ajouter les listeners
+                // Check that elements exist before adding listeners
                 const generateBtn = document.getElementById('generateBtn');
                 if (generateBtn) {
                     generateBtn.addEventListener('click', () => {
@@ -303,7 +303,7 @@
                     animateBtn.textContent = '⏸️ Pause';
                 }
                 
-                // Animation : mise à jour automatique
+                // Animation: automatic update
                 this.animationInterval = setInterval(() => {
                     this.loadRealData();
                 }, 3000);
@@ -330,7 +330,7 @@
                 try {
                     this.updateStatus('Chargement des données...');
                     
-                    // S'assurer que realData est initialisé
+                    // Ensure realData is initialized
                     if (!this.realData) {
                         this.realData = {
                             ultrason: [],
@@ -347,7 +347,7 @@
                         throw new Error(data.error);
                     }
                     
-                    // Assignation sécurisée
+                    // Safe assignment
                     this.realData.ultrason = Array.isArray(data.ultrason) ? data.ultrason : [];
                     this.realData.sound = Array.isArray(data.son) ? data.son : [];
                     
@@ -360,36 +360,36 @@
                     console.error('Erreur lors du chargement des données:', error);
                     this.updateStatus(`Erreur: ${error.message}`);
                     
-                    // Réinitialiser les données en cas d'erreur
+                    // Reset data in case of error
                     this.realData = {
                         ultrason: [],
                         sound: []
                     };
                     
-                    // Fallback sur la génération classique
+                    // Fallback to classic generation
                     this.generateHeatmapClassic();
                 }
             }
 
             updateStatus(message) {
-                // Mettre à jour le statut de manière sécurisée
+                // Safely update status
                 const statusElements = document.querySelectorAll('.status-text');
                 statusElements.forEach(el => {
                     if (el) el.textContent = message;
                 });
                 
-                // Aussi essayer l'élément dans le header
+                // Also try the element in the header
                 const headerStatus = document.querySelector('.header .status-text');
                 if (headerStatus) {
                     headerStatus.textContent = message;
                 }
                 
-                // Log du statut
+                // Log status
                 console.log('Heatmap Status:', message);
             }
 
             drawRoom() {
-                // Vérifier que les contextes existent avant de dessiner
+                // Check that contexts exist before drawing
                 if (this.ultrasonCtx && this.ultrasonCanvas) {
                     this.drawBaseGrid(this.ultrasonCtx, this.ultrasonCanvas);
                 }
@@ -406,7 +406,7 @@
                 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
-                // Dessiner la grille
+                // Draw the grid
                 ctx.strokeStyle = 'rgba(255,255,255,0.1)';
                 ctx.lineWidth = 1;
                 for (let i = 0; i <= 8; i++) {
@@ -421,7 +421,7 @@
                     ctx.stroke();
                 }
                 
-                // Dessiner les capteurs
+                // Draw sensors
                 this.drawSensors(ctx, canvas);
             }
 
@@ -431,7 +431,7 @@
                 this.ultrasonCtx = this.ultrasonCanvas.getContext('2d');
                 this.soundCtx = this.soundCanvas.getContext('2d');
 
-                // Ajuster la taille des canvas
+                // Adjust canvas sizes
                 [this.ultrasonCanvas, this.soundCanvas].forEach(canvas => {
                     canvas.width = canvas.offsetWidth;
                     canvas.height = canvas.offsetHeight;
@@ -470,7 +470,7 @@
                 const canvas = this.ultrasonCanvas;
                 const ctx = this.ultrasonCtx;
                 
-                // Vérifier que le canvas et le contexte existent
+                // Verify that the canvas and context exist
                 if (!canvas || !ctx) {
                     console.error('Canvas ultrason non disponible');
                     this.updateStatus('Erreur: Canvas non initialisé');
@@ -479,7 +479,7 @@
                 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 
-                // Vérifier que les données existent
+                // Verify that the data exists
                 if (!this.realData || !this.realData.ultrason || !this.realData.sound) {
                     ctx.fillStyle = '#666';
                     ctx.font = '20px Arial';
@@ -491,10 +491,10 @@
                 const cellWidth = canvas.width / resolution;
                 const cellHeight = canvas.height / resolution;
                 
-                // Créer une grille de densité basée sur les vraies positions
+                // Create a density grid based on real positions
                 const densityGrid = Array(resolution).fill().map(() => Array(resolution).fill(0));
                 
-                // Ajouter les points ultrason
+                // Add ultrasound points
                 this.realData.ultrason.forEach(point => {
                     const x = parseFloat(point.pos_x_estimee);
                     const y = parseFloat(point.pos_y_estimee);
@@ -509,7 +509,7 @@
                     }
                 });
                 
-                // Ajouter les points son
+                // Add sound points
                 this.realData.sound.forEach(point => {
                     const x = parseFloat(point.pos_x_estimee);
                     const y = parseFloat(point.pos_y_estimee);
@@ -519,16 +519,16 @@
                         const gridY = Math.floor((y / this.roomHeight) * resolution);
                         
                         if (gridX >= 0 && gridX < resolution && gridY >= 0 && gridY < resolution) {
-                            densityGrid[gridY][gridX] += 0.8; // Poids légèrement différent
+                            densityGrid[gridY][gridX] += 0.8; // Slightly different weight
                         }
                     }
                 });
                 
-                // Trouver la densité maximale
+                // Find the maximum density
                 const maxDensity = Math.max(...densityGrid.flat());
                 
                 if (maxDensity === 0) {
-                    // Pas de données, afficher un message
+                    // No data, display a message
                     ctx.fillStyle = '#666';
                     ctx.font = '20px Arial';
                     ctx.textAlign = 'center';
@@ -536,15 +536,15 @@
                     return;
                 }
                 
-                // Dessiner la heatmap
+                // Draw the heatmap
                 for (let y = 0; y < resolution; y++) {
                     for (let x = 0; x < resolution; x++) {
                         const density = densityGrid[y][x];
                         if (density > 0) {
                             const intensity = density / maxDensity;
                             
-                            // Couleur basée sur la densité
-                            const hue = 240 - (intensity * 180); // Bleu à rouge
+                            // Color based on density
+                            const hue = 240 - (intensity * 180); // Blue to red
                             const saturation = 80;
                             const lightness = 30 + (intensity * 40);
                             
@@ -569,7 +569,7 @@
                     const x = (pos[0] / this.roomWidth) * canvas.width;
                     const y = (pos[1] / this.roomHeight) * canvas.height;
                     
-                    // Cercle capteur
+                    // Sensor circle
                     ctx.beginPath();
                     ctx.arc(x, y, 12, 0, 2 * Math.PI);
                     ctx.fillStyle = sensorColors[name];
@@ -590,7 +590,7 @@
                 const canvas = type === 'ultrason' ? this.ultrasonCanvas : this.soundCanvas;
                 const ctx = type === 'ultrason' ? this.ultrasonCtx : this.soundCtx;
                 
-                // Vérifier que le canvas et le contexte existent
+                // Verify that the canvas and context exist
                 if (!canvas || !ctx) {
                     console.error(`Canvas ${type} non disponible`);
                     return;
@@ -611,7 +611,7 @@
                 const cellWidth = canvas.width / resolution;
                 const cellHeight = canvas.height / resolution;
                 
-                // Analyser la distribution des points et des précisions
+                // Analyze the distribution of points and accuracies
                 const accuracyGrid = Array(resolution).fill().map(() => Array(resolution).fill([]));
                 
                 data.forEach(point => {
@@ -623,19 +623,19 @@
                         const gridY = Math.floor((y / this.roomHeight) * resolution);
                         
                         if (gridX >= 0 && gridX < resolution && gridY >= 0 && gridY < resolution) {
-                            // Calculer une "précision" basée sur la cohérence des distances
+                            // Compute a "precision" based on distance coherence
                             const distA = parseFloat(point.dist_a);
                             const distB = parseFloat(point.dist_b);
                             const distC = parseFloat(point.dist_c);
                             
-                            // Vérifier la cohérence (triangulation possible)
+                            // Check coherence (triangulation possible)
                             const coherence = this.calculateCoherence(x, y, distA, distB, distC);
                             accuracyGrid[gridY][gridX].push(coherence);
                         }
                     }
                 });
                 
-                // Dessiner basé sur la précision moyenne par cellule
+                // Draw based on average precision per cell
                 for (let y = 0; y < resolution; y++) {
                     for (let x = 0; x < resolution; x++) {
                         const coherences = accuracyGrid[y][x];
@@ -643,10 +643,10 @@
                             const avgCoherence = coherences.reduce((a, b) => a + b, 0) / coherences.length;
                             const dataPoints = coherences.length;
                             
-                            // Qualité basée sur cohérence et nombre de points
+                            // Quality based on coherence and number of points
                             const quality = (avgCoherence * 0.7) + (Math.min(dataPoints / 5, 1) * 0.3);
                             
-                            const hue = quality * 120; // Rouge à vert
+                            const hue = quality * 120; // Red to green
                             const saturation = 70;
                             const lightness = 25 + (quality * 50);
                             
@@ -664,19 +664,19 @@
             }
 
             calculateCoherence(x, y, distA, distB, distC) {
-                // Calculer les distances théoriques
+                // Compute theoretical distances
                 const theoreticalA = this.calculateDistance([x, y], this.sensors['A']);
                 const theoreticalB = this.calculateDistance([x, y], this.sensors['B']);
                 const theoreticalC = this.calculateDistance([x, y], this.sensors['C']);
                 
-                // Calculer l'erreur relative
+                // Compute relative error
                 const errorA = Math.abs(distA - theoreticalA) / Math.max(theoreticalA, 0.1);
                 const errorB = Math.abs(distB - theoreticalB) / Math.max(theoreticalB, 0.1);
                 const errorC = Math.abs(distC - theoreticalC) / Math.max(theoreticalC, 0.1);
                 
                 const avgError = (errorA + errorB + errorC) / 3;
                 
-                // Convertir l'erreur en score de cohérence (0-1)
+                // Convert error into a coherence score (0-1)
                 return Math.max(0, Math.min(1, 1 - avgError));
             }
 
@@ -695,22 +695,22 @@
                         const realX = (x / resolution) * this.roomWidth;
                         const realY = (y / resolution) * this.roomHeight;
                         
-                        // Calculer la qualité de réception ultrason basée sur la triangulation
+                        // Calculate ultrasound reception quality based on triangulation
                         let triangulationQuality = 0;
                         let visibleSensors = 0;
                         
                         Object.values(this.sensors).forEach(sensorPos => {
                             const distance = this.calculateDistance([realX, realY], sensorPos);
                             
-                            // Zone optimale pour ultrason : entre 0.5m et 5m
+                            // Optimal zone for ultrasound: between 0.5m and 5m
                             if (distance >= 0.5 && distance <= 5.0) {
-                                // Qualité dépend de la distance (optimal vers 2-3m)
+                                // Quality depends on distance (optimal around 2-3m)
                                 const optimalDistance = 2.5;
                                 const distanceFromOptimal = Math.abs(distance - optimalDistance);
                                 const sensorQuality = Math.max(0, 1 - (distanceFromOptimal / 2.5));
                                 
-                                // Facteur de puissance influence la portée
-                                const powerFactor = sourcePower / 100; // Normalisation
+                                // Power factor influences range
+                                const powerFactor = sourcePower / 100; // Normalization
                                 const adjustedQuality = sensorQuality * powerFactor;
                                 
                                 triangulationQuality += adjustedQuality;
@@ -718,34 +718,34 @@
                             }
                         });
                         
-                        // Qualité finale basée sur le nombre de capteurs et leur qualité
+                        // Final quality based on number of sensors and their quality
                         let finalQuality = 0;
                         if (visibleSensors >= 3) {
-                            finalQuality = triangulationQuality / 3; // Excellente triangulation
+                            finalQuality = triangulationQuality / 3; // Excellent triangulation
                         } else if (visibleSensors === 2) {
-                            finalQuality = (triangulationQuality / 2) * 0.6; // Triangulation approximative
+                            finalQuality = (triangulationQuality / 2) * 0.6; // Approximate triangulation
                         } else if (visibleSensors === 1) {
-                            finalQuality = triangulationQuality * 0.3; // Localisation impossible
+                            finalQuality = triangulationQuality * 0.3; // Localization impossible
                         }
                         
                         finalQuality = Math.min(1, finalQuality);
                         
-                        // Couleur en fonction de la qualité
+                        // Color based on quality
                         if (finalQuality < 0.1) {
-                            // Zone morte (rouge foncé)
+                            // Dead zone (dark red)
                             ctx.fillStyle = '#4a0e0e';
                         } else if (finalQuality < 0.4) {
-                            // Zone faible (rouge à orange)
+                            // Weak zone (red to orange)
                             const intensity = (finalQuality - 0.1) / 0.3;
-                            const hue = intensity * 30; // 0 (rouge) à 30 (orange)
+                            const hue = intensity * 30; // 0 (red) to 30 (orange)
                             ctx.fillStyle = `hsl(${hue}, 80%, ${20 + intensity * 30}%)`;
                         } else if (finalQuality < 0.8) {
-                            // Zone correcte (orange à vert)
+                            // Acceptable zone (orange to green)
                             const intensity = (finalQuality - 0.4) / 0.4;
-                            const hue = 30 + intensity * 60; // 30 (orange) à 90 (vert)
+                            const hue = 30 + intensity * 60; // 30 (orange) to 90 (green)
                             ctx.fillStyle = `hsl(${hue}, 75%, ${35 + intensity * 25}%)`;
                         } else {
-                            // Zone optimale (vert brillant)
+                            // Optimal zone (bright green)
                             const intensity = (finalQuality - 0.8) / 0.2;
                             ctx.fillStyle = `hsl(120, 70%, ${50 + intensity * 20}%)`;
                         }
@@ -772,13 +772,13 @@
                         const realX = (x / resolution) * this.roomWidth;
                         const realY = (y / resolution) * this.roomHeight;
                         
-                        // Calculer l'amplitude moyenne reçue par tous les capteurs
+                        // Calculate the average amplitude received by all sensors
                         let totalAmplitude = 0;
                         let validSensors = 0;
                         
                         Object.values(this.sensors).forEach(sensorPos => {
                             const distance = this.calculateDistance([realX, realY], sensorPos);
-                            if (distance > 0.1) { // Éviter division par zéro
+                            if (distance > 0.1) { // Avoid division by zero
                                 const amplitude = sourcePower / (distance * distance);
                                 totalAmplitude += amplitude;
                                 validSensors++;
@@ -788,24 +788,24 @@
                         if (validSensors > 0) {
                             const avgAmplitude = totalAmplitude / validSensors;
                             
-                            // Normaliser l'amplitude (log scale pour meilleur rendu)
+                            // Normalize amplitude (log scale for better display)
                             const normalizedAmplitude = Math.min(1, Math.log10(avgAmplitude + 1) / 3);
                             
-                            // Couleur basée sur l'amplitude
-                            const hue = 240 - (normalizedAmplitude * 180); // De violet à rouge
+                            // Color based on amplitude
+                            const hue = 240 - (normalizedAmplitude * 180); // From purple to red
                             const saturation = 80;
                             const lightness = 20 + (normalizedAmplitude * 60);
                             
                             ctx.fillStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
                         } else {
-                            ctx.fillStyle = '#000000'; // Zone morte
+                            ctx.fillStyle = '#000000'; // Dead zone
                         }
                         
                         ctx.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
                     }
                 }
                 
-                // Dessiner les capteurs
+                // Draw sensors
                 this.drawSensors(ctx, canvas);
             }
 
@@ -816,7 +816,7 @@
                     const x = (pos[0] / this.roomWidth) * canvas.width;
                     const y = (pos[1] / this.roomHeight) * canvas.height;
                     
-                    // Cercle capteur
+                    // Sensor circle
                     ctx.beginPath();
                     ctx.arc(x, y, 12, 0, 2 * Math.PI);
                     ctx.fillStyle = sensorColors[name];
@@ -834,9 +834,9 @@
             }
 
             calculateRealStatistics() {
-                // Vérifier que les données existent
+                // Verify that the data exists
                 if (!this.realData || !this.realData.ultrason || !this.realData.sound) {
-                    // Valeurs par défaut si pas de données
+                    // Default values if no data
                     document.getElementById('coveragePercent').textContent = '0%';
                     document.getElementById('optimalZone').textContent = '0';
                     document.getElementById('deadZones').textContent = 'N/A';
@@ -848,9 +848,9 @@
                 const totalSound = this.realData.sound.length;
                 const totalPoints = totalUltrason + totalSound;
                 
-                // Calculer les zones couvertes
+                // Calculate covered areas
                 const coveredCells = new Set();
-                const resolution = 40; // Résolution par défaut pour le calcul
+                const resolution = 40; // Default resolution for calculation
                 
                 [...this.realData.ultrason, ...this.realData.sound].forEach(point => {
                     const x = parseFloat(point.pos_x_estimee);
@@ -867,7 +867,7 @@
                 const cellArea = (this.roomWidth * this.roomHeight) / (resolution * resolution);
                 const coveredArea = coveredCells.size * cellArea;
                 
-                // Calculer la précision moyenne
+                // Calculate average precision
                 let totalAccuracy = 0;
                 let validPoints = 0;
                 
@@ -888,7 +888,7 @@
                 
                 const avgAccuracy = validPoints > 0 ? totalAccuracy / validPoints : 0;
                 
-                // Calculer la portée maximale
+                // Calculate maximum range
                 let maxRange = 0;
                 [...this.realData.ultrason, ...this.realData.sound].forEach(point => {
                     const distances = [
@@ -900,7 +900,7 @@
                     if (maxDist > maxRange) maxRange = maxDist;
                 });
                 
-                // Mettre à jour l'affichage de manière sécurisée
+                // Safely update the display
                 const elements = {
                     'coveragePercent': coveragePercent.toFixed(1) + '%',
                     'optimalZone': coveredArea.toFixed(1),
@@ -917,13 +917,13 @@
             }
 
             generateCombinedHeatmap(resolution) {
-                // Vérifier que les canvas existent
+                // Verify that the canvases exist
                 if (!this.ultrasonCanvas || !this.ultrasonCtx) {
                     console.error('Canvas ultrason non disponible pour la vue combinée');
                     return;
                 }
                 
-                // Afficher la heatmap combinée dans le canvas ultrason
+                // Display the combined heatmap in the ultrasound canvas
                 const canvas = this.ultrasonCanvas;
                 const ctx = this.ultrasonCtx;
                 
@@ -932,10 +932,10 @@
                 const cellWidth = canvas.width / resolution;
                 const cellHeight = canvas.height / resolution;
                 
-                // Grille combinée
+                // Combined grid
                 const combinedGrid = Array(resolution).fill().map(() => Array(resolution).fill({ ultrason: 0, sound: 0 }));
                 
-                // Ajouter données ultrason
+                // Add ultrasound data
                 if (this.realData && this.realData.ultrason) {
                     this.realData.ultrason.forEach(point => {
                         const x = parseFloat(point.pos_x_estimee);
@@ -955,7 +955,7 @@
                     });
                 }
                 
-                // Ajouter données son
+                // Add sound data
                 if (this.realData && this.realData.sound) {
                     this.realData.sound.forEach(point => {
                         const x = parseFloat(point.pos_x_estimee);
@@ -975,7 +975,7 @@
                     });
                 }
                 
-                // Dessiner
+                // Draw
                 for (let y = 0; y < resolution; y++) {
                     for (let x = 0; x < resolution; x++) {
                         const cell = combinedGrid[y][x];
@@ -984,8 +984,8 @@
                         if (total > 0) {
                             const ultrasonRatio = cell.ultrason / total;
                             
-                            // Mélange de couleurs : bleu pour ultrason, vert pour son
-                            const hue = ultrasonRatio * 240 + (1 - ultrasonRatio) * 120; // Bleu à vert
+                            // Color mix: blue for ultrasound, green for sound
+                            const hue = ultrasonRatio * 240 + (1 - ultrasonRatio) * 120; // Blue to green
                             const saturation = 70;
                             const lightness = 30 + (Math.min(total / 3, 1) * 40);
                             
@@ -997,7 +997,7 @@
                 
                 this.drawSensors(ctx, canvas);
                 
-                // Nettoyer le canvas son pour montrer la légende
+                // Clear the sound canvas to show the legend
                 if (this.soundCtx && this.soundCanvas) {
                     const soundCtx = this.soundCtx;
                     soundCtx.clearRect(0, 0, this.soundCanvas.width, this.soundCanvas.height);
@@ -1014,14 +1014,14 @@
             }
 
             generateHeatmapClassic() {
-                // Fallback : générer une heatmap théorique classique
+                // Fallback: generate a classic theoretical heatmap
                 const resolutionElement = document.getElementById('resolution');
                 const sourcePowerElement = document.getElementById('sourcePower');
                 
                 const resolution = resolutionElement ? parseInt(resolutionElement.value) : 40;
                 const sourcePower = sourcePowerElement ? parseInt(sourcePowerElement.value) : 100;
                 
-                // Générer les heatmaps classiques pour les deux types
+                // Generate classic heatmaps for both types
                 this.generateUltrasonHeatmap(resolution);
                 this.generateSoundHeatmap(resolution, sourcePower);
             }
@@ -1036,21 +1036,21 @@
                 
                 const cellWidth = canvas.width / resolution;
                 const cellHeight = canvas.height / resolution;
-                const sourcePower = 100; // Valeur par défaut
+                const sourcePower = 100; // Default value
 
                 for (let x = 0; x < resolution; x++) {
                     for (let y = 0; y < resolution; y++) {
                         const realX = (x / resolution) * this.roomWidth;
                         const realY = (y / resolution) * this.roomHeight;
                         
-                        // Calculer la qualité de réception ultrason basée sur la triangulation
+                        // Calculate ultrasound reception quality based on triangulation
                         let triangulationQuality = 0;
                         let visibleSensors = 0;
                         
                         Object.values(this.sensors).forEach(sensorPos => {
                             const distance = this.calculateDistance([realX, realY], sensorPos);
                             
-                            // Zone optimale pour ultrason : entre 0.5m et 5m
+                            // Optimal zone for ultrasound: between 0.5m and 5m
                             if (distance >= 0.5 && distance <= 5.0) {
                                 const optimalDistance = 2.5;
                                 const distanceFromOptimal = Math.abs(distance - optimalDistance);
@@ -1064,7 +1064,7 @@
                             }
                         });
                         
-                        // Qualité finale
+                        // Final quality
                         let finalQuality = 0;
                         if (visibleSensors >= 3) {
                             finalQuality = triangulationQuality / 3;
@@ -1076,7 +1076,7 @@
                         
                         finalQuality = Math.min(1, finalQuality);
                         
-                        // Couleur en fonction de la qualité
+                        // Color based on quality
                         if (finalQuality < 0.1) {
                             ctx.fillStyle = '#4a0e0e';
                         } else if (finalQuality < 0.4) {
@@ -1160,7 +1160,7 @@
                     
                     let frame = 0;
                     this.animationInterval = setInterval(() => {
-                        // Animation : faire varier la puissance source
+                        // Animation: vary the source power
                         const basePower = parseInt(document.getElementById('sourcePower').value);
                         const animatedPower = basePower + Math.sin(frame * 0.1) * 20;
                         
@@ -1175,7 +1175,7 @@
             }
         }
 
-        // Initialisation
+        // Initialization
         window.addEventListener('load', () => {
             console.log('DOM chargé, initialisation de la Heatmap...');
             try {
